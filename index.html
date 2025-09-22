@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wargames</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-management">
+        <select id="game-selector" class="game-selector">
+            <option value="">Select or create a game...</option>
+        </select>
+        <button id="new-game-btn" class="game-btn">New Game</button>
+        <button id="delete-game-btn" class="game-btn danger">Delete Game</button>
+        <button id="export-game-btn" class="game-btn">Export</button>
+        <input type="file" id="import-game-input" accept=".json" style="display: none;">
+        <button id="import-game-btn" class="game-btn">Import</button>
+    </div>
+
+    <div class="game-title-container">
+        <input type="text" id="game-title" class="game-title-input" placeholder="Enter game title...">
+    </div>
+
+    <div class="game-notes-container">
+        <textarea id="game-notes" class="game-notes" placeholder="Enter notes about this game..."></textarea>
+    </div>
+
+    <div class="locations">
+        <div class="hand-row">
+            <div class="location">
+                <div class="location-header">
+                    <h2>Your Hand</h2>
+                    <span class="ops-average" id="your-hand-avg"></span>
+                </div>
+                <div class="card-area" id="your-hand"></div>
+            </div>
+
+            <div class="location">
+                <div class="location-header">
+                    <h2>Opponent's Hand</h2>
+                    <span class="ops-average" id="opponent-hand-avg"></span>
+                </div>
+                <div class="card-area" id="opponent-hand"></div>
+            </div>
+        </div>
+
+        <div class="location">
+            <div class="location-header">
+                <h2>Deck</h2>
+                <span class="ops-average" id="deck-avg"></span>
+            </div>
+            <div class="deck-subsections">
+                <div class="deck-subsection">
+                    <h3>US</h3>
+                    <div class="card-area" id="deck-us"></div>
+                </div>
+                <div class="deck-subsection">
+                    <h3>Neutral</h3>
+                    <div class="card-area" id="deck-neutral"></div>
+                </div>
+                <div class="deck-subsection">
+                    <h3>USSR</h3>
+                    <div class="card-area" id="deck-ussr"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="discard-row">
+            <div class="location">
+                <h2>Discard</h2>
+                <div class="card-area" id="discard"></div>
+            </div>
+
+            <div class="location">
+                <h2>Removed</h2>
+                <div class="card-area" id="removed"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

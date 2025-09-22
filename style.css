@@ -1,0 +1,233 @@
+.location {
+    border: 2px solid #333;
+    margin: 10px;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.card-area {
+    min-height: 50px;
+    border: 1px dashed #666;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.hand-row {
+    display: flex;
+    gap: 0;
+}
+
+.hand-row .location {
+    flex: 1;
+}
+
+.discard-row {
+    display: flex;
+    gap: 0;
+}
+
+.discard-row .location {
+    flex: 1;
+}
+
+h2 {
+    font-size: 16px;
+    font-weight: normal;
+    color: #666;
+    margin: 0 0 10px 0;
+}
+
+.card {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    margin: 4px 0;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.card-actions {
+    display: flex;
+    gap: 5px;
+    margin-right: 10px;
+}
+
+.card-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.discard-icon {
+    background: #999;
+    color: white;
+}
+
+.discard-icon:hover {
+    background: #777;
+}
+
+.remove-icon {
+    background: #999;
+    color: white;
+}
+
+.remove-icon:hover {
+    background: #777;
+}
+
+.remove-icon.hidden {
+    visibility: hidden;
+}
+
+.card-text {
+    cursor: pointer;
+}
+
+.card-text:hover {
+    text-decoration: underline;
+}
+
+.location.selected {
+    background-color: #ffebee;
+    border-color: #f44336;
+}
+
+.location h2 {
+    cursor: pointer;
+}
+
+.card-text.us {
+    color: #2196F3;
+}
+
+.card-text.ussr {
+    color: #f44336;
+}
+
+.deck-subsections {
+    display: flex;
+    gap: 10px;
+}
+
+.deck-subsection {
+    flex: 1;
+}
+
+.deck-subsection h3 {
+    font-size: 14px;
+    font-weight: normal;
+    color: #888;
+    margin: 0 0 8px 0;
+    text-align: center;
+}
+
+.game-title-container {
+    margin: 20px 10px;
+    text-align: center;
+}
+
+.game-title-input {
+    font-size: 18px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: transparent;
+    text-align: center;
+    min-width: 200px;
+}
+
+.game-title-input:focus {
+    outline: none;
+    border-color: #666;
+}
+
+.game-title-input::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+.location-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ops-average {
+    font-size: 12px;
+    color: #888;
+    font-weight: normal;
+}
+
+.game-notes-container {
+    margin: 10px;
+}
+
+.game-notes {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+}
+
+.game-notes:focus {
+    outline: none;
+    border-color: #666;
+}
+
+.game-notes::placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+.game-management {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #f9f9f9;
+}
+
+.game-selector {
+    flex: 1;
+    padding: 5px 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+.game-btn {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.game-btn:hover {
+    background: #f0f0f0;
+}
+
+.game-btn.danger {
+    color: #d32f2f;
+    border-color: #d32f2f;
+}
+
+.game-btn.danger:hover {
+    background: #ffeaea;
+}

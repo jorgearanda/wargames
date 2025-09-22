@@ -1,0 +1,32 @@
+[
+  {
+    "name": "ABM Treaty",
+    "canBeRemoved": false,
+    "eventType": "neutral",
+    "ops": 4
+  },
+  {
+    "name": "CIA Created",
+    "canBeRemoved": true,
+    "eventType": "us",
+    "ops": 1
+  },
+  {
+    "name": "Blockade",
+    "canBeRemoved": true,
+    "eventType": "ussr",
+    "ops": 1
+  },
+  {
+    "name": "Duck and Cover",
+    "canBeRemoved": false,
+    "eventType": "us",
+    "ops": 3
+  },
+  {
+    "name": "Europe Scoring",
+    "canBeRemoved": false,
+    "eventType": "neutral",
+    "ops": 0
+  }
+]
