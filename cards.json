@@ -3,30 +3,77 @@
     "name": "ABM Treaty",
     "canBeRemoved": false,
     "eventType": "neutral",
-    "ops": 4
+    "ops": 4,
+    "war": "early"
   },
   {
     "name": "CIA Created",
     "canBeRemoved": true,
     "eventType": "us",
-    "ops": 1
+    "ops": 1,
+    "war": "early"
   },
   {
     "name": "Blockade",
     "canBeRemoved": true,
     "eventType": "ussr",
-    "ops": 1
+    "ops": 1,
+    "war": "early"
   },
   {
     "name": "Duck and Cover",
     "canBeRemoved": false,
     "eventType": "us",
-    "ops": 3
+    "ops": 3,
+    "war": "early"
   },
   {
     "name": "Europe Scoring",
     "canBeRemoved": false,
     "eventType": "neutral",
-    "ops": 0
+    "ops": 0,
+    "war": "early"
+  },
+  {
+    "name": "Voice of America",
+    "canBeRemoved": false,
+    "eventType": "us",
+    "ops": 2,
+    "war": "mid"
+  },
+  {
+    "name": "Lone Gunman",
+    "canBeRemoved": true,
+    "eventType": "ussr",
+    "ops": 1,
+    "war": "mid"
+  },
+  {
+    "name": "Arms Race",
+    "canBeRemoved": false,
+    "eventType": "neutral",
+    "ops": 3,
+    "war": "mid"
+  },
+  {
+    "name": "Wargames",
+    "canBeRemoved": true,
+    "eventType": "neutral",
+    "ops": 4,
+    "war": "late"
+  },
+  {
+    "name": "Star Wars",
+    "canBeRemoved": true,
+    "eventType": "us",
+    "ops": 2,
+    "war": "late"
+  },
+  {
+    "name": "Glasnost",
+    "canBeRemoved": true,
+    "eventType": "ussr",
+    "ops": 4,
+    "war": "late"
   }
 ]

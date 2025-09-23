@@ -3,6 +3,7 @@ let selectedHandLocation = 'your-hand'; // Default to Your Hand
 function createCardElement(cardData) {
     const cardDiv = document.createElement('div');
     cardDiv.className = 'card';
+    cardDiv.dataset.war = cardData.war || 'early';
 
     const actionsDiv = document.createElement('div');
     actionsDiv.className = 'card-actions';
@@ -22,13 +23,37 @@ function createCardElement(cardData) {
 
     const cardText = document.createElement('span');
     cardText.className = 'card-text';
-    if (cardData.eventType && cardData.eventType !== 'neutral') {
+    if (cardData.eventType) {
         cardText.classList.add(cardData.eventType);
     }
     cardText.textContent = `${cardData.ops} - ${cardData.name}`;
 
     actionsDiv.appendChild(discardIcon);
     actionsDiv.appendChild(removeIcon);
+    cardDiv.appendChild(actionsDiv);
+    cardDiv.appendChild(cardText);
+
+    return cardDiv;
+}
+
+function createUnknownCardElement() {
+    const cardDiv = document.createElement('div');
+    cardDiv.className = 'card unknown-card';
+
+    const actionsDiv = document.createElement('div');
+    actionsDiv.className = 'card-actions';
+
+    const minusIcon = document.createElement('div');
+    minusIcon.className = 'card-icon unknown-minus-icon';
+    minusIcon.title = 'Remove unknown card';
+    minusIcon.textContent = '−';
+
+    const cardText = document.createElement('span');
+    cardText.className = 'card-text unknown-card-text';
+    const deckAvg = calculateDeckAverage();
+    cardText.textContent = `${deckAvg.toFixed(1)} - Unknown Card`;
+
+    actionsDiv.appendChild(minusIcon);
     cardDiv.appendChild(actionsDiv);
     cardDiv.appendChild(cardText);
 
@@ -50,8 +75,15 @@ async function loadCards() {
 
         cards.forEach(cardData => {
             const cardElement = createCardElement(cardData);
-            const targetDeck = getDeckSubsection(cardData.eventType);
-            targetDeck.appendChild(cardElement);
+
+            // Put mid/late war cards in the hidden box, early war cards in deck
+            if (cardData.war === 'early') {
+                const targetDeck = getDeckSubsection(cardData.eventType);
+                targetDeck.appendChild(cardElement);
+            } else {
+                const box = document.getElementById('box');
+                box.appendChild(cardElement);
+            }
         });
 
         // Sort cards in each deck subsection
@@ -81,10 +113,10 @@ function getDeckSubsection(eventType) {
 
 function getCardData(cardElement) {
     const cardText = cardElement.querySelector('.card-text').textContent;
-    const opsMatch = cardText.match(/^(\d+) - (.+)$/);
+    const opsMatch = cardText.match(/^(\d+(?:\.\d+)?) - (.+)$/);
     if (opsMatch) {
         return {
-            ops: parseInt(opsMatch[1]),
+            ops: parseFloat(opsMatch[1]),
             name: opsMatch[2]
         };
     }
@@ -123,7 +155,34 @@ function calculateAverageOps(container) {
     return totalOps / cards.length;
 }
 
+function calculateDeckAverage() {
+    const deckUS = document.getElementById('deck-us');
+    const deckNeutral = document.getElementById('deck-neutral');
+    const deckUSSR = document.getElementById('deck-ussr');
+    const allDeckCards = [
+        ...Array.from(deckUS.children),
+        ...Array.from(deckNeutral.children),
+        ...Array.from(deckUSSR.children)
+    ];
+
+    if (allDeckCards.length === 0) return 0;
+
+    const totalOps = allDeckCards.reduce((sum, card) => {
+        const data = getCardData(card);
+        return sum + data.ops;
+    }, 0);
+
+    return totalOps / allDeckCards.length;
+}
+
 function updateLocationAverages() {
+    // First update all unknown cards with current deck average
+    const deckAvg = calculateDeckAverage();
+    const unknownCards = document.querySelectorAll('.unknown-card-text');
+    unknownCards.forEach(cardText => {
+        cardText.textContent = `${deckAvg.toFixed(1)} - Unknown Card`;
+    });
+
     // Update Your Hand average
     const yourHandContainer = document.getElementById('your-hand');
     const yourHandAvg = calculateAverageOps(yourHandContainer);
@@ -151,8 +210,8 @@ function updateLocationAverages() {
             const data = getCardData(card);
             return sum + data.ops;
         }, 0);
-        const deckAvg = totalOps / allDeckCards.length;
-        document.getElementById('deck-avg').textContent = `(avg: ${deckAvg.toFixed(1)})`;
+        const deckAvgForDisplay = totalOps / allDeckCards.length;
+        document.getElementById('deck-avg').textContent = `(avg: ${deckAvgForDisplay.toFixed(1)})`;
     } else {
         document.getElementById('deck-avg').textContent = '';
     }
@@ -235,6 +294,15 @@ document.addEventListener('click', function(e) {
         e.stopPropagation();
         const card = e.target.closest('.card');
         moveCard(card, 'removed');
+    } else if (e.target.classList.contains('unknown-minus-icon')) {
+        e.stopPropagation();
+        const card = e.target.closest('.card');
+        card.remove();
+        updateLocationAverages();
+        // Auto-save current game state
+        if (getCurrentGameId()) {
+            saveCurrentGame();
+        }
     } else if (e.target.classList.contains('card-text')) {
         e.stopPropagation();
         const card = e.target.closest('.card');
@@ -278,7 +346,7 @@ function setCurrentGameId(gameId) {
 
 function getCardPositions() {
     const positions = {};
-    const locations = ['your-hand', 'opponent-hand', 'deck-us', 'deck-neutral', 'deck-ussr', 'discard', 'removed'];
+    const locations = ['your-hand', 'opponent-hand', 'deck-us', 'deck-neutral', 'deck-ussr', 'discard', 'removed', 'box'];
 
     locations.forEach(locationId => {
         const container = document.getElementById(locationId);
@@ -286,12 +354,15 @@ function getCardPositions() {
             positions[locationId] = Array.from(container.children).map(card => {
                 const data = getCardData(card);
                 const cardText = card.querySelector('.card-text');
+                const isUnknown = card.classList.contains('unknown-card');
                 return {
-                    name: data.name,
+                    name: isUnknown ? 'Unknown Card' : data.name,
                     ops: data.ops,
                     eventType: cardText.classList.contains('us') ? 'us' :
                               cardText.classList.contains('ussr') ? 'ussr' : 'neutral',
-                    canBeRemoved: !card.querySelector('.remove-icon').classList.contains('hidden')
+                    canBeRemoved: !card.querySelector('.remove-icon') || !card.querySelector('.remove-icon').classList.contains('hidden'),
+                    war: card.dataset.war || 'early',
+                    isUnknown: isUnknown
                 };
             });
         }
@@ -322,7 +393,7 @@ function loadGameData(gameId) {
 }
 
 function clearAllCards() {
-    const locations = ['your-hand', 'opponent-hand', 'deck-us', 'deck-neutral', 'deck-ussr', 'discard', 'removed'];
+    const locations = ['your-hand', 'opponent-hand', 'deck-us', 'deck-neutral', 'deck-ussr', 'discard', 'removed', 'box'];
     locations.forEach(locationId => {
         const container = document.getElementById(locationId);
         if (container) {
@@ -338,7 +409,12 @@ function restoreCardPositions(positions) {
         const container = document.getElementById(locationId);
         if (container && cards) {
             cards.forEach(cardData => {
-                const cardElement = createCardElement(cardData);
+                let cardElement;
+                if (cardData.isUnknown || cardData.name === 'Unknown Card') {
+                    cardElement = createUnknownCardElement();
+                } else {
+                    cardElement = createCardElement(cardData);
+                }
                 container.appendChild(cardElement);
             });
         }
@@ -467,6 +543,153 @@ function updateGameSelector() {
     });
 }
 
+function addDiscards() {
+    // Step 1: Move all cards from Deck subsections to Opponent's Hand
+    const deckUS = document.getElementById('deck-us');
+    const deckNeutral = document.getElementById('deck-neutral');
+    const deckUSSR = document.getElementById('deck-ussr');
+    const opponentHand = document.getElementById('opponent-hand');
+
+    // Collect all deck cards
+    const allDeckCards = [
+        ...Array.from(deckUS.children),
+        ...Array.from(deckNeutral.children),
+        ...Array.from(deckUSSR.children)
+    ];
+
+    // Move each deck card to opponent's hand
+    allDeckCards.forEach(card => {
+        card.remove();
+        opponentHand.appendChild(card);
+    });
+
+    // Sort opponent's hand
+    sortCardsInContainer(opponentHand);
+
+    // Step 2: Move all cards from Discard to appropriate Deck subsections
+    const discardPile = document.getElementById('discard');
+    const discardCards = Array.from(discardPile.children);
+
+    discardCards.forEach(card => {
+        // Get the card's event type from its text element
+        const cardTextElement = card.querySelector('.card-text');
+        let eventType = 'neutral';
+        if (cardTextElement.classList.contains('us')) {
+            eventType = 'us';
+        } else if (cardTextElement.classList.contains('ussr')) {
+            eventType = 'ussr';
+        }
+
+        // Move to appropriate deck subsection
+        card.remove();
+        const targetDeckSubsection = getDeckSubsection(eventType);
+        targetDeckSubsection.appendChild(card);
+    });
+
+    // Sort all deck subsections
+    sortCardsInContainer(deckUS);
+    sortCardsInContainer(deckNeutral);
+    sortCardsInContainer(deckUSSR);
+
+    // Update averages
+    updateLocationAverages();
+
+    // Auto-save current game state
+    if (getCurrentGameId()) {
+        saveCurrentGame();
+    }
+}
+
+function addMidWar() {
+    const box = document.getElementById('box');
+    const midWarCards = Array.from(box.children).filter(card => card.dataset.war === 'mid');
+
+    midWarCards.forEach(card => {
+        // Get the card's event type from its text element
+        const cardTextElement = card.querySelector('.card-text');
+        let eventType = 'neutral';
+        if (cardTextElement.classList.contains('us')) {
+            eventType = 'us';
+        } else if (cardTextElement.classList.contains('ussr')) {
+            eventType = 'ussr';
+        }
+
+        // Move from box to appropriate deck subsection
+        card.remove();
+        const targetDeckSubsection = getDeckSubsection(eventType);
+        targetDeckSubsection.appendChild(card);
+    });
+
+    // Sort all deck subsections
+    const deckUS = document.getElementById('deck-us');
+    const deckNeutral = document.getElementById('deck-neutral');
+    const deckUSSR = document.getElementById('deck-ussr');
+    sortCardsInContainer(deckUS);
+    sortCardsInContainer(deckNeutral);
+    sortCardsInContainer(deckUSSR);
+
+    // Update averages
+    updateLocationAverages();
+
+    // Auto-save current game state
+    if (getCurrentGameId()) {
+        saveCurrentGame();
+    }
+}
+
+function addLateWar() {
+    const box = document.getElementById('box');
+    const lateWarCards = Array.from(box.children).filter(card => card.dataset.war === 'late');
+
+    lateWarCards.forEach(card => {
+        // Get the card's event type from its text element
+        const cardTextElement = card.querySelector('.card-text');
+        let eventType = 'neutral';
+        if (cardTextElement.classList.contains('us')) {
+            eventType = 'us';
+        } else if (cardTextElement.classList.contains('ussr')) {
+            eventType = 'ussr';
+        }
+
+        // Move from box to appropriate deck subsection
+        card.remove();
+        const targetDeckSubsection = getDeckSubsection(eventType);
+        targetDeckSubsection.appendChild(card);
+    });
+
+    // Sort all deck subsections
+    const deckUS = document.getElementById('deck-us');
+    const deckNeutral = document.getElementById('deck-neutral');
+    const deckUSSR = document.getElementById('deck-ussr');
+    sortCardsInContainer(deckUS);
+    sortCardsInContainer(deckNeutral);
+    sortCardsInContainer(deckUSSR);
+
+    // Update averages
+    updateLocationAverages();
+
+    // Auto-save current game state
+    if (getCurrentGameId()) {
+        saveCurrentGame();
+    }
+}
+
+function addUnknownCard() {
+    const opponentHand = document.getElementById('opponent-hand');
+    const unknownCard = createUnknownCardElement();
+
+    opponentHand.appendChild(unknownCard);
+    sortCardsInContainer(opponentHand);
+
+    // Update averages
+    updateLocationAverages();
+
+    // Auto-save current game state
+    if (getCurrentGameId()) {
+        saveCurrentGame();
+    }
+}
+
 // Export/Import functionality
 function exportGame() {
     const gameId = getCurrentGameId();
@@ -528,6 +751,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('delete-game-btn').addEventListener('click', deleteCurrentGame);
     document.getElementById('export-game-btn').addEventListener('click', exportGame);
     document.getElementById('import-game-btn').addEventListener('click', importGame);
+    document.getElementById('add-discards-btn').addEventListener('click', addDiscards);
+    document.getElementById('add-mid-btn').addEventListener('click', addMidWar);
+    document.getElementById('add-late-btn').addEventListener('click', addLateWar);
+    document.getElementById('opponent-plus-btn').addEventListener('click', addUnknownCard);
 
     // Import file handling
     document.getElementById('import-game-input').addEventListener('change', function(e) {

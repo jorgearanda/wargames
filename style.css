@@ -89,6 +89,7 @@ h2 {
 
 .card-text {
     cursor: pointer;
+    font-family: monospace;
 }
 
 .card-text:hover {
@@ -112,6 +113,10 @@ h2 {
     color: #f44336;
 }
 
+.card-text.neutral {
+    color: #9c27b0;
+}
+
 .deck-subsections {
     display: flex;
     gap: 10px;
@@ -131,7 +136,10 @@ h2 {
 
 .game-title-container {
     margin: 20px 10px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
 }
 
 .game-title-input {
@@ -154,10 +162,57 @@ h2 {
     font-style: italic;
 }
 
+.title-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.title-btn {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.title-btn:hover {
+    background: #f0f0f0;
+}
+
 .location-header {
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+.hand-controls {
+    display: flex;
+    gap: 5px;
+    margin-left: auto;
+}
+
+.hand-control-icon {
+    background: #999;
+    color: white;
+}
+
+.hand-control-icon:hover {
+    background: #777;
+}
+
+.unknown-minus-icon {
+    background: #999;
+    color: white;
+}
+
+.unknown-minus-icon:hover {
+    background: #777;
+}
+
+.unknown-card-text {
+    color: #888;
 }
 
 .ops-average {

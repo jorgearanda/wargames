@@ -20,6 +20,12 @@
 
     <div class="game-title-container">
         <input type="text" id="game-title" class="game-title-input" placeholder="Enter game title...">
+        <div class="title-buttons">
+            <button id="add-discards-btn" class="title-btn">Add Discards</button>
+            <button id="add-mid-btn" class="title-btn">Add Mid</button>
+            <button id="add-late-btn" class="title-btn">Add Late</button>
+            <button id="undo-btn" class="title-btn">Undo</button>
+        </div>
     </div>
 
     <div class="game-notes-container">
@@ -40,6 +46,9 @@
                 <div class="location-header">
                     <h2>Opponent's Hand</h2>
                     <span class="ops-average" id="opponent-hand-avg"></span>
+                    <div class="hand-controls">
+                        <div class="card-icon hand-control-icon" id="opponent-plus-btn" title="Add card">+</div>
+                    </div>
                 </div>
                 <div class="card-area" id="opponent-hand"></div>
             </div>
@@ -78,6 +87,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Hidden storage for mid/late war cards -->
+    <div id="box" style="display: none;"></div>
 
     <script src="script.js"></script>
 </body>
