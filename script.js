@@ -1,24 +1,44 @@
 let selectedHandLocation = 'your-hand'; // Default to Your Hand
 
-function createCardElement(cardData) {
+// Undo system
+let actionHistory = [];
+const MAX_HISTORY_SIZE = 20;
+let lastUndoTime = 0;
+const UNDO_RATE_LIMIT_MS = 100; // Prevent accidental rapid undos
+
+// Action types for undo system
+const ACTION_TYPES = {
+    MOVE_CARD: 'move_card',
+    ADD_UNKNOWN: 'add_unknown',
+    REMOVE_UNKNOWN: 'remove_unknown',
+    ADD_DISCARDS: 'add_discards',
+    ADD_MID_WAR: 'add_mid_war',
+    ADD_LATE_WAR: 'add_late_war'
+};
+
+function createCardElement(cardData, currentLocation = null) {
     const cardDiv = document.createElement('div');
     cardDiv.className = 'card';
     cardDiv.dataset.war = cardData.war || 'early';
+    cardDiv.dataset.canBeRemoved = cardData.canBeRemoved ? 'true' : 'false';
 
     const actionsDiv = document.createElement('div');
     actionsDiv.className = 'card-actions';
-
-    const discardIcon = document.createElement('div');
-    discardIcon.className = 'card-icon discard-icon';
-    discardIcon.title = 'Move to Discard';
-    discardIcon.textContent = '↓';
 
     const removeIcon = document.createElement('div');
     removeIcon.className = 'card-icon remove-icon';
     removeIcon.title = 'Move to Removed';
     removeIcon.textContent = '⊘';
-    if (!cardData.canBeRemoved) {
+    if (!cardData.canBeRemoved || currentLocation === 'removed') {
         removeIcon.classList.add('hidden');
+    }
+
+    const discardIcon = document.createElement('div');
+    discardIcon.className = 'card-icon discard-icon';
+    discardIcon.title = 'Move to Discard';
+    discardIcon.textContent = '↓';
+    if (currentLocation === 'discard') {
+        discardIcon.classList.add('hidden');
     }
 
     const cardText = document.createElement('span');
@@ -26,14 +46,42 @@ function createCardElement(cardData) {
     if (cardData.eventType) {
         cardText.classList.add(cardData.eventType);
     }
-    cardText.textContent = `${cardData.ops} - ${cardData.name}`;
+    cardText.textContent = `${cardData.ops}  ${cardData.name}`;
 
-    actionsDiv.appendChild(discardIcon);
     actionsDiv.appendChild(removeIcon);
+    actionsDiv.appendChild(discardIcon);
     cardDiv.appendChild(actionsDiv);
     cardDiv.appendChild(cardText);
 
     return cardDiv;
+}
+
+function updateCardButtonVisibility(cardElement, newLocationId) {
+    const removeIcon = cardElement.querySelector('.remove-icon');
+    const discardIcon = cardElement.querySelector('.discard-icon');
+
+    if (removeIcon) {
+        const canBeRemoved = cardElement.dataset.canBeRemoved === 'true';
+
+        // Hide if card is in removed location OR if card is not removable
+        if (newLocationId === 'removed' || !canBeRemoved) {
+            removeIcon.classList.add('hidden');
+            removeIcon.style.visibility = 'hidden';
+        } else {
+            removeIcon.classList.remove('hidden');
+            removeIcon.style.visibility = 'visible';
+        }
+    }
+
+    if (discardIcon) {
+        if (newLocationId === 'discard') {
+            discardIcon.classList.add('hidden');
+            discardIcon.style.visibility = 'hidden';
+        } else {
+            discardIcon.classList.remove('hidden');
+            discardIcon.style.visibility = 'visible';
+        }
+    }
 }
 
 function createUnknownCardElement() {
@@ -43,6 +91,11 @@ function createUnknownCardElement() {
     const actionsDiv = document.createElement('div');
     actionsDiv.className = 'card-actions';
 
+    // Empty space where remove button would be (for alignment)
+    const emptySpace = document.createElement('div');
+    emptySpace.className = 'card-icon';
+    emptySpace.style.visibility = 'hidden';
+
     const minusIcon = document.createElement('div');
     minusIcon.className = 'card-icon unknown-minus-icon';
     minusIcon.title = 'Remove unknown card';
@@ -51,8 +104,9 @@ function createUnknownCardElement() {
     const cardText = document.createElement('span');
     cardText.className = 'card-text unknown-card-text';
     const deckAvg = calculateDeckAverage();
-    cardText.textContent = `${deckAvg.toFixed(1)} - Unknown Card`;
+    cardText.textContent = `${deckAvg.toFixed(1)}  ?`;
 
+    actionsDiv.appendChild(emptySpace);
     actionsDiv.appendChild(minusIcon);
     cardDiv.appendChild(actionsDiv);
     cardDiv.appendChild(cardText);
@@ -74,16 +128,19 @@ async function loadCards() {
         console.log('Cards loaded successfully:', cards);
 
         cards.forEach(cardData => {
-            const cardElement = createCardElement(cardData);
+            let targetLocation, targetLocationId;
 
             // Put mid/late war cards in the hidden box, early war cards in deck
             if (cardData.war === 'early') {
-                const targetDeck = getDeckSubsection(cardData.eventType);
-                targetDeck.appendChild(cardElement);
+                targetLocation = getDeckSubsection(cardData.eventType);
+                targetLocationId = targetLocation.id;
             } else {
-                const box = document.getElementById('box');
-                box.appendChild(cardElement);
+                targetLocation = document.getElementById('box');
+                targetLocationId = 'box';
             }
+
+            const cardElement = createCardElement(cardData, targetLocationId);
+            targetLocation.appendChild(cardElement);
         });
 
         // Sort cards in each deck subsection
@@ -113,7 +170,7 @@ function getDeckSubsection(eventType) {
 
 function getCardData(cardElement) {
     const cardText = cardElement.querySelector('.card-text').textContent;
-    const opsMatch = cardText.match(/^(\d+(?:\.\d+)?) - (.+)$/);
+    const opsMatch = cardText.match(/^(\d+(?:\.\d+)?)  (.+)$/);
     if (opsMatch) {
         return {
             ops: parseFloat(opsMatch[1]),
@@ -175,25 +232,204 @@ function calculateDeckAverage() {
     return totalOps / allDeckCards.length;
 }
 
+// Undo system functions
+function getGameSnapshot() {
+    return {
+        cardPositions: getCardPositions(),
+        selectedHandLocation: selectedHandLocation,
+        timestamp: Date.now()
+    };
+}
+
+function recordAction(actionType, actionData = {}) {
+    // Don't record actions during undo operations
+    if (actionData.isUndoOperation) {
+        return null;
+    }
+
+    const beforeState = getGameSnapshot();
+    const action = {
+        type: actionType,
+        timestamp: Date.now(),
+        beforeState: beforeState,
+        afterState: null, // Will be set after operation completes
+        actionData: actionData
+    };
+
+    // Store reference to be filled after operation
+    actionHistory.push(action);
+
+    // Trim history if too large
+    if (actionHistory.length > MAX_HISTORY_SIZE) {
+        actionHistory.shift();
+    }
+
+    return action;
+}
+
+function finalizeAction(action) {
+    if (action && !action.afterState) {
+        action.afterState = getGameSnapshot();
+    }
+    updateUndoButtonState();
+}
+
+function canUndo() {
+    return actionHistory.length > 0;
+}
+
+function clearActionHistory() {
+    actionHistory = [];
+    updateUndoButtonState();
+}
+
+function updateUndoButtonState() {
+    const undoButton = document.getElementById('undo-btn');
+    if (undoButton) {
+        undoButton.disabled = !canUndo();
+        undoButton.style.opacity = canUndo() ? '1' : '0.5';
+
+        if (canUndo()) {
+            const lastAction = actionHistory[actionHistory.length - 1];
+            const actionName = getActionDisplayName(lastAction.type);
+            const actionTime = new Date(lastAction.timestamp).toLocaleTimeString();
+            undoButton.title = `Undo: ${actionName} (${actionTime})\n${actionHistory.length} actions available\nKeyboard: Ctrl+Z`;
+        } else {
+            undoButton.title = 'No actions to undo\nKeyboard: Ctrl+Z';
+        }
+    }
+}
+
+function getActionDisplayName(actionType) {
+    const displayNames = {
+        [ACTION_TYPES.MOVE_CARD]: 'Move Card',
+        [ACTION_TYPES.ADD_UNKNOWN]: 'Add Unknown Card',
+        [ACTION_TYPES.REMOVE_UNKNOWN]: 'Remove Unknown Card',
+        [ACTION_TYPES.ADD_DISCARDS]: 'Add Discards',
+        [ACTION_TYPES.ADD_MID_WAR]: 'Add Mid War Cards',
+        [ACTION_TYPES.ADD_LATE_WAR]: 'Add Late War Cards'
+    };
+    return displayNames[actionType] || actionType;
+}
+
+function performUndo() {
+    if (!canUndo()) {
+        return false;
+    }
+
+    // Rate limiting to prevent accidental rapid undos
+    const now = Date.now();
+    if (now - lastUndoTime < UNDO_RATE_LIMIT_MS) {
+        console.log('Undo rate limited');
+        return false;
+    }
+    lastUndoTime = now;
+
+    const lastAction = actionHistory.pop();
+
+    if (lastAction && lastAction.beforeState && lastAction.beforeState.cardPositions) {
+        // Optional confirmation for bulk operations
+        const isBulkOperation = [
+            ACTION_TYPES.ADD_DISCARDS,
+            ACTION_TYPES.ADD_MID_WAR,
+            ACTION_TYPES.ADD_LATE_WAR
+        ].includes(lastAction.type);
+
+        if (isBulkOperation && !confirmBulkUndo(lastAction)) {
+            // User cancelled, put the action back
+            actionHistory.push(lastAction);
+            updateUndoButtonState();
+            return false;
+        }
+
+        console.log(`Undoing action: ${lastAction.type} from ${new Date(lastAction.timestamp).toLocaleTimeString()}`);
+        console.log('Before undo - Current state:', getGameSnapshot().cardPositions);
+        console.log('Restoring to state:', lastAction.beforeState.cardPositions);
+
+        // Restore the previous state
+        restoreGameSnapshot(lastAction.beforeState, { isUndoOperation: true });
+
+        // Visual feedback for undo
+        showUndoFeedback();
+
+        updateUndoButtonState();
+        return true;
+    } else {
+        console.error('Cannot undo - invalid action or state:', lastAction);
+        // Put the action back if it was invalid
+        if (lastAction) {
+            actionHistory.push(lastAction);
+        }
+        return false;
+    }
+}
+
+function confirmBulkUndo(action) {
+    // For now, we'll skip confirmation to keep UX simple
+    // Could add this later with a setting: return confirm(`Undo ${getActionDisplayName(action.type)}?`);
+    return true;
+}
+
+function showUndoFeedback() {
+    // Flash the main locations area to indicate undo occurred
+    const locations = document.querySelector('.locations');
+    if (locations) {
+        locations.classList.add('undo-flash');
+        setTimeout(() => {
+            locations.classList.remove('undo-flash');
+        }, 300);
+    }
+
+    // Also flash the undo button briefly
+    const undoButton = document.getElementById('undo-btn');
+    if (undoButton) {
+        undoButton.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            undoButton.style.transform = '';
+        }, 150);
+    }
+}
+
+function restoreGameSnapshot(snapshot, options = {}) {
+    // Restore card positions
+    if (snapshot.cardPositions) {
+        restoreCardPositions(snapshot.cardPositions, options);
+    }
+
+    // Restore selected hand location
+    if (snapshot.selectedHandLocation) {
+        selectedHandLocation = snapshot.selectedHandLocation;
+        selectHandLocation(selectedHandLocation);
+    }
+
+    // Update averages
+    updateLocationAverages();
+
+    // Auto-save if not during undo operation
+    if (!options.isUndoOperation && getCurrentGameId()) {
+        saveCurrentGame();
+    }
+}
+
 function updateLocationAverages() {
     // First update all unknown cards with current deck average
     const deckAvg = calculateDeckAverage();
     const unknownCards = document.querySelectorAll('.unknown-card-text');
     unknownCards.forEach(cardText => {
-        cardText.textContent = `${deckAvg.toFixed(1)} - Unknown Card`;
+        cardText.textContent = `${deckAvg.toFixed(1)}  ?`;
     });
 
     // Update Your Hand average
     const yourHandContainer = document.getElementById('your-hand');
     const yourHandAvg = calculateAverageOps(yourHandContainer);
     document.getElementById('your-hand-avg').textContent =
-        yourHandContainer.children.length > 0 ? `(avg: ${yourHandAvg.toFixed(1)})` : '';
+        yourHandContainer.children.length > 0 ? `${yourHandAvg.toFixed(1)}/card` : '';
 
     // Update Opponent's Hand average
     const opponentHandContainer = document.getElementById('opponent-hand');
     const opponentHandAvg = calculateAverageOps(opponentHandContainer);
     document.getElementById('opponent-hand-avg').textContent =
-        opponentHandContainer.children.length > 0 ? `(avg: ${opponentHandAvg.toFixed(1)})` : '';
+        opponentHandContainer.children.length > 0 ? `${opponentHandAvg.toFixed(1)}/card` : '';
 
     // Update Deck average (combine all subsections)
     const deckUS = document.getElementById('deck-us');
@@ -211,14 +447,23 @@ function updateLocationAverages() {
             return sum + data.ops;
         }, 0);
         const deckAvgForDisplay = totalOps / allDeckCards.length;
-        document.getElementById('deck-avg').textContent = `(avg: ${deckAvgForDisplay.toFixed(1)})`;
+        document.getElementById('deck-avg').textContent = `${deckAvgForDisplay.toFixed(1)}/card`;
     } else {
         document.getElementById('deck-avg').textContent = '';
     }
 }
 
-function moveCard(cardElement, targetLocationId) {
+function moveCard(cardElement, targetLocationId, options = {}) {
+    // Record action for undo
+    const action = !options.skipUndo ? recordAction(ACTION_TYPES.MOVE_CARD, {
+        cardName: getCardData(cardElement).name,
+        fromLocation: cardElement.closest('.card-area')?.id,
+        toLocation: targetLocationId
+    }) : null;
+
     cardElement.remove();
+
+    let actualLocationId = targetLocationId;
 
     if (targetLocationId === 'deck') {
         // Get the card's event type from its text element
@@ -230,6 +475,7 @@ function moveCard(cardElement, targetLocationId) {
             eventType = 'ussr';
         }
         const targetLocation = getDeckSubsection(eventType);
+        actualLocationId = targetLocation.id;
         targetLocation.appendChild(cardElement);
         sortCardsInContainer(targetLocation);
     } else {
@@ -238,8 +484,16 @@ function moveCard(cardElement, targetLocationId) {
         sortCardsInContainer(targetLocation);
     }
 
+    // Update button visibility based on actual final location
+    updateCardButtonVisibility(cardElement, actualLocationId);
+
     // Update averages after moving card
     updateLocationAverages();
+
+    // Finalize action for undo
+    if (action) {
+        finalizeAction(action);
+    }
 
     // Auto-save current game state
     if (getCurrentGameId()) {
@@ -247,7 +501,7 @@ function moveCard(cardElement, targetLocationId) {
     }
 }
 
-function selectHandLocation(locationId) {
+function selectHandLocation(locationId, options = {}) {
     // Remove selected class from all locations
     document.querySelectorAll('.location').forEach(loc => {
         loc.classList.remove('selected');
@@ -259,7 +513,9 @@ function selectHandLocation(locationId) {
     // Add selected class to opponent's hand if it's selected
     if (locationId === 'opponent-hand') {
         const opponentHandLocation = document.querySelector('#opponent-hand').closest('.location');
-        opponentHandLocation.classList.add('selected');
+        if (opponentHandLocation) {
+            opponentHandLocation.classList.add('selected');
+        }
     }
 }
 
@@ -297,8 +553,16 @@ document.addEventListener('click', function(e) {
     } else if (e.target.classList.contains('unknown-minus-icon')) {
         e.stopPropagation();
         const card = e.target.closest('.card');
+
+        // Record action for undo
+        const action = recordAction(ACTION_TYPES.REMOVE_UNKNOWN);
+
         card.remove();
         updateLocationAverages();
+
+        // Finalize action for undo
+        finalizeAction(action);
+
         // Auto-save current game state
         if (getCurrentGameId()) {
             saveCurrentGame();
@@ -306,6 +570,12 @@ document.addEventListener('click', function(e) {
     } else if (e.target.classList.contains('card-text')) {
         e.stopPropagation();
         const card = e.target.closest('.card');
+
+        // Don't allow unknown cards to be moved via text clicks
+        if (card.classList.contains('unknown-card')) {
+            return;
+        }
+
         const currentLocation = card.closest('.card-area');
 
         // If card is in Deck, move to selected hand location
@@ -356,7 +626,7 @@ function getCardPositions() {
                 const cardText = card.querySelector('.card-text');
                 const isUnknown = card.classList.contains('unknown-card');
                 return {
-                    name: isUnknown ? 'Unknown Card' : data.name,
+                    name: isUnknown ? '?' : data.name,
                     ops: data.ops,
                     eventType: cardText.classList.contains('us') ? 'us' :
                               cardText.classList.contains('ussr') ? 'ussr' : 'neutral',
@@ -381,6 +651,8 @@ function saveCurrentGame() {
         notes: document.getElementById('game-notes').value,
         cardPositions: getCardPositions(),
         lastModified: new Date().toISOString()
+        // Note: We don't persist undo history with game saves for now
+        // This keeps save files smaller and avoids complexity
     };
 
     console.log('Saving game data:', gameData);
@@ -402,26 +674,272 @@ function clearAllCards() {
     });
 }
 
-function restoreCardPositions(positions) {
+function restoreCardPositions(positions, options = {}) {
     clearAllCards();
+
+    // Temporarily flag that we're in a restoration process
+    // This prevents any action recording during card restoration
+    const isRestoring = options.isUndoOperation || options.isLoading;
 
     Object.entries(positions).forEach(([locationId, cards]) => {
         const container = document.getElementById(locationId);
         if (container && cards) {
             cards.forEach(cardData => {
                 let cardElement;
-                if (cardData.isUnknown || cardData.name === 'Unknown Card') {
+                if (cardData.isUnknown || cardData.name === '?') {
                     cardElement = createUnknownCardElement();
                 } else {
-                    cardElement = createCardElement(cardData);
+                    cardElement = createCardElement(cardData, locationId);
                 }
                 container.appendChild(cardElement);
+
+                // Update button visibility for restored cards
+                if (!cardData.isUnknown && cardData.name !== '?') {
+                    updateCardButtonVisibility(cardElement, locationId);
+                }
             });
         }
     });
 
     updateLocationAverages();
 }
+
+// Debug function for console inspection
+window.debugUndo = function() {
+    console.log('Undo System Debug Info:');
+    console.log(`History length: ${actionHistory.length}/${MAX_HISTORY_SIZE}`);
+    console.log('Action history:', actionHistory.map(action => ({
+        type: action.type,
+        timestamp: new Date(action.timestamp).toLocaleTimeString(),
+        hasBeforeState: !!action.beforeState,
+        hasAfterState: !!action.afterState
+    })));
+    console.log('Can undo:', canUndo());
+    if (canUndo()) {
+        const lastAction = actionHistory[actionHistory.length - 1];
+        console.log('Next undo would be:', getActionDisplayName(lastAction.type));
+    }
+};
+
+// Test utilities for edge case validation
+window.testUndo = function() {
+    console.log('🧪 Starting Undo Edge Case Testing...');
+
+    // Test 1: State consistency validation
+    function testStateConsistency() {
+        console.log('\n📊 Test 1: State Consistency Validation');
+        const beforeState = getGameSnapshot();
+        console.log('Initial state captured');
+
+        // Validate that state has required structure
+        const isValid = beforeState &&
+                       beforeState.cardPositions &&
+                       typeof beforeState.selectedHandLocation === 'string' &&
+                       typeof beforeState.timestamp === 'number';
+
+        console.log('State structure valid:', isValid);
+        return isValid;
+    }
+
+    // Test 2: History overflow handling
+    function testHistoryOverflow() {
+        console.log('\n📈 Test 2: History Overflow Handling');
+        const initialLength = actionHistory.length;
+        console.log('Current history length:', initialLength);
+        console.log('Max history size:', MAX_HISTORY_SIZE);
+        console.log('History overflow protection:', initialLength <= MAX_HISTORY_SIZE);
+
+        return initialLength <= MAX_HISTORY_SIZE;
+    }
+
+    // Test 3: Action validation
+    function testActionValidation() {
+        console.log('\n🔍 Test 3: Action Validation');
+        if (actionHistory.length === 0) {
+            console.log('No actions to validate');
+            return true;
+        }
+
+        let validActions = 0;
+        actionHistory.forEach((action, index) => {
+            const hasRequiredFields = action.type &&
+                                    action.timestamp &&
+                                    action.beforeState;
+            if (hasRequiredFields) validActions++;
+            else console.warn(`Invalid action at index ${index}:`, action);
+        });
+
+        console.log(`Valid actions: ${validActions}/${actionHistory.length}`);
+        return validActions === actionHistory.length;
+    }
+
+    // Test 4: UI state synchronization
+    function testUIStatSync() {
+        console.log('\n🎨 Test 4: UI State Synchronization');
+        const undoButton = document.getElementById('undo-btn');
+        const hasActions = actionHistory.length > 0;
+        const buttonEnabled = undoButton && !undoButton.disabled;
+        const syncValid = hasActions === buttonEnabled;
+
+        console.log('Has actions:', hasActions);
+        console.log('Button enabled:', buttonEnabled);
+        console.log('Sync valid:', syncValid);
+
+        return syncValid;
+    }
+
+    // Run all tests
+    const results = [
+        testStateConsistency(),
+        testHistoryOverflow(),
+        testActionValidation(),
+        testUIStatSync()
+    ];
+
+    const passed = results.filter(r => r).length;
+    console.log(`\n✅ Tests completed: ${passed}/${results.length} passed`);
+
+    if (passed === results.length) {
+        console.log('🎉 All tests passed!');
+    } else {
+        console.warn('⚠️ Some tests failed. Check logs above.');
+    }
+
+    return passed === results.length;
+};
+
+// Automated edge case scenario generator
+window.testUndoScenarios = function() {
+    console.log('🎯 Running Undo Edge Case Scenarios...');
+    console.log('Note: This will perform actions on your current game state');
+
+    if (!confirm('This will modify your current game state. Continue?')) {
+        console.log('Test cancelled by user');
+        return;
+    }
+
+    // Scenario 1: Rapid undo attempts
+    function testRapidUndo() {
+        console.log('\n⚡ Scenario 1: Rapid Undo Attempts');
+        if (actionHistory.length === 0) {
+            console.log('No actions to undo - adding test action first');
+            addUnknownCard();
+        }
+
+        // Try rapid undos
+        const attempts = [];
+        for (let i = 0; i < 5; i++) {
+            attempts.push(performUndo());
+        }
+
+        const successful = attempts.filter(r => r).length;
+        console.log(`Rapid undo attempts: ${successful}/${attempts.length} successful`);
+        console.log('Rate limiting working:', successful <= 1);
+    }
+
+    // Scenario 2: Undo with empty history
+    function testEmptyHistory() {
+        console.log('\n📭 Scenario 2: Undo with Empty History');
+        clearActionHistory();
+        const result = performUndo();
+        console.log('Undo with empty history returned:', result);
+        console.log('Safely handled empty history:', result === false);
+    }
+
+    // Scenario 3: Complex operation sequence
+    function testComplexSequence() {
+        console.log('\n🔄 Scenario 3: Complex Operation Sequence');
+        const initialState = getGameSnapshot();
+
+        // Perform multiple operations
+        console.log('Performing sequence: Add Unknown → Add Discards → Undo × 2');
+        addUnknownCard();
+        addDiscards();
+
+        const firstUndo = performUndo();
+        const secondUndo = performUndo();
+
+        console.log('First undo successful:', firstUndo);
+        console.log('Second undo successful:', secondUndo);
+
+        // Verify we can still operate normally
+        const finalState = getGameSnapshot();
+        console.log('Final state captured successfully:', !!finalState);
+    }
+
+    // Run scenarios
+    console.log('Running test scenarios...');
+    testRapidUndo();
+    testEmptyHistory();
+    testComplexSequence();
+
+    console.log('\n🏁 Scenario testing completed');
+    console.log('Check console output above for detailed results');
+};
+
+// Manual testing guide
+window.showUndoTestingGuide = function() {
+    console.log(`
+🧪 UNDO SYSTEM TESTING GUIDE
+============================
+
+AUTOMATED TESTS:
+1. Run 'testUndo()' - Validates system integrity
+2. Run 'testUndoScenarios()' - Tests edge case scenarios
+3. Run 'debugUndo()' - Inspect current state
+
+MANUAL TEST CASES:
+==================
+
+🔸 BASIC FUNCTIONALITY:
+□ Click + button to add unknown card → Undo button enables
+□ Click Undo button → Card disappears, button updates tooltip
+□ Press Ctrl+Z → Same as clicking Undo button
+□ Move a regular card (drag/click) → Can undo movement
+□ Click discard/remove icons → Can undo these actions
+
+🔸 BULK OPERATIONS:
+□ Click "Add Discards" → Large state change, can undo
+□ Click "Add Mid" → Cards move from box to deck, can undo
+□ Click "Add Late" → Cards move from box to deck, can undo
+□ Try undoing each bulk operation → Verify complete reversal
+
+🔸 EDGE CASES:
+□ Click Undo when no actions → Button stays disabled
+□ Perform 25+ actions → History should cap at ${MAX_HISTORY_SIZE}
+□ Switch games → Undo history clears
+□ Create new game → Undo history clears
+□ Import game → Undo history clears
+
+🔸 UI STATE:
+□ Hover over undo button → Shows detailed tooltip
+□ Button disabled when no actions → Gray appearance
+□ Button enabled when actions available → Orange appearance
+□ Undo operation → Flash animation plays
+
+🔸 STABILITY:
+□ Rapid clicking undo button → Rate limiting prevents issues
+□ Mix of different action types → All undo correctly
+□ Undo/redo/undo sequences → System remains stable
+□ Unknown cards with changing deck averages → Undo preserves state
+
+ERROR SCENARIOS TO TEST:
+========================
+□ Browser refresh during action → No errors on reload
+□ Network disconnection → Offline functionality intact
+□ Console errors during undo → System remains functional
+□ Invalid game state → Graceful failure handling
+
+PERFORMANCE TESTS:
+==================
+□ 20 actions + 20 undos → Responsive performance
+□ Memory usage stable over time
+□ No memory leaks after extended use
+
+Run automated tests first, then work through manual cases.
+Report any failures or unexpected behavior.
+    `);
+};
 
 function createNewGame() {
     const gameId = 'game_' + Date.now();
@@ -436,6 +954,9 @@ function createNewGame() {
     if (getCurrentGameId()) {
         saveCurrentGame();
     }
+
+    // Clear undo history when creating new game
+    clearActionHistory();
 
     // Initialize new game with default card setup
     isLoading = true;
@@ -471,6 +992,9 @@ function deleteCurrentGame() {
     // Remove game data
     localStorage.removeItem(`cardCounter_game_${gameId}`);
 
+    // Clear undo history when deleting game
+    clearActionHistory();
+
     // Clear current game
     setCurrentGameId(null);
     document.getElementById('game-title').value = '';
@@ -488,6 +1012,9 @@ function loadGame(gameId) {
     if (getCurrentGameId() && getCurrentGameId() !== gameId) {
         saveCurrentGame(); // Save current game before switching
     }
+
+    // Clear undo history when switching games
+    clearActionHistory();
 
     setCurrentGameId(gameId);
     const gameData = loadGameData(gameId);
@@ -543,7 +1070,10 @@ function updateGameSelector() {
     });
 }
 
-function addDiscards() {
+function addDiscards(options = {}) {
+    // Record action for undo
+    const action = !options.skipUndo ? recordAction(ACTION_TYPES.ADD_DISCARDS) : null;
+
     // Step 1: Move all cards from Deck subsections to Opponent's Hand
     const deckUS = document.getElementById('deck-us');
     const deckNeutral = document.getElementById('deck-neutral');
@@ -594,13 +1124,21 @@ function addDiscards() {
     // Update averages
     updateLocationAverages();
 
+    // Finalize action for undo
+    if (action) {
+        finalizeAction(action);
+    }
+
     // Auto-save current game state
     if (getCurrentGameId()) {
         saveCurrentGame();
     }
 }
 
-function addMidWar() {
+function addMidWar(options = {}) {
+    // Record action for undo
+    const action = !options.skipUndo ? recordAction(ACTION_TYPES.ADD_MID_WAR) : null;
+
     const box = document.getElementById('box');
     const midWarCards = Array.from(box.children).filter(card => card.dataset.war === 'mid');
 
@@ -631,13 +1169,21 @@ function addMidWar() {
     // Update averages
     updateLocationAverages();
 
+    // Finalize action for undo
+    if (action) {
+        finalizeAction(action);
+    }
+
     // Auto-save current game state
     if (getCurrentGameId()) {
         saveCurrentGame();
     }
 }
 
-function addLateWar() {
+function addLateWar(options = {}) {
+    // Record action for undo
+    const action = !options.skipUndo ? recordAction(ACTION_TYPES.ADD_LATE_WAR) : null;
+
     const box = document.getElementById('box');
     const lateWarCards = Array.from(box.children).filter(card => card.dataset.war === 'late');
 
@@ -668,13 +1214,21 @@ function addLateWar() {
     // Update averages
     updateLocationAverages();
 
+    // Finalize action for undo
+    if (action) {
+        finalizeAction(action);
+    }
+
     // Auto-save current game state
     if (getCurrentGameId()) {
         saveCurrentGame();
     }
 }
 
-function addUnknownCard() {
+function addUnknownCard(options = {}) {
+    // Record action for undo
+    const action = !options.skipUndo ? recordAction(ACTION_TYPES.ADD_UNKNOWN) : null;
+
     const opponentHand = document.getElementById('opponent-hand');
     const unknownCard = createUnknownCardElement();
 
@@ -683,6 +1237,11 @@ function addUnknownCard() {
 
     // Update averages
     updateLocationAverages();
+
+    // Finalize action for undo
+    if (action) {
+        finalizeAction(action);
+    }
 
     // Auto-save current game state
     if (getCurrentGameId()) {
@@ -728,6 +1287,9 @@ function importGame() {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM Content Loaded');
     updateGameSelector();
+    updateUndoButtonState(); // Initialize undo button state
+
+    // Automated tests available in console: testUndo(), testUndoScenarios(), showUndoTestingGuide()
 
     // Try to load the last current game, or load default cards
     const currentId = getCurrentGameId();
@@ -737,6 +1299,7 @@ document.addEventListener('DOMContentLoaded', function() {
         loadGame(currentId);
     } else {
         console.log('No current game, loading default cards');
+        clearActionHistory(); // Clear undo history when loading default cards
         loadCards();
     }
 
@@ -755,6 +1318,22 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('add-mid-btn').addEventListener('click', addMidWar);
     document.getElementById('add-late-btn').addEventListener('click', addLateWar);
     document.getElementById('opponent-plus-btn').addEventListener('click', addUnknownCard);
+    document.getElementById('undo-btn').addEventListener('click', performUndo);
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Ctrl+Z or Cmd+Z for undo
+        if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+            // Don't interfere if user is typing in inputs
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                return;
+            }
+            e.preventDefault();
+            if (canUndo()) {
+                performUndo();
+            }
+        }
+    });
 
     // Import file handling
     document.getElementById('import-game-input').addEventListener('change', function(e) {
