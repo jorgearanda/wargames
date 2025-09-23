@@ -1,38 +1,325 @@
 [
   {
+    "cardId": 1,
+    "short": "assco",
+    "name": "Asia Scoring",
+    "eventType": "neutral",
+    "ops": 0,
+    "canBeRemoved": false,
+    "war": "early"
+  },
+  {
+    "cardId": 2,
+    "short": "eusco",
+    "name": "Europe Scoring",
+    "eventType": "neutral",
+    "ops": 0,
+    "canBeRemoved": false,
+    "war": "early"
+  },
+  {
+    "cardId": 3,
+    "short": "mesco",
+    "name": "Middle East Scoring",
+    "eventType": "neutral",
+    "ops": 0,
+    "canBeRemoved": false,
+    "war": "early"
+  },
+  {
+    "cardId": 4,
+    "short": "duck",
+    "name": "Duck and Cover",
+    "eventType": "us",
+    "ops": 3,
+    "canBeRemoved": false,
+    "war": "early"
+  },
+  {
+    "cardId": 5,
+    "short": "fyp",
+    "name": "Five Year Plan",
+    "eventType": "us",
+    "ops": 3,
+    "canBeRemoved": false,
+    "war": "early"
+  },
+  {
+    "cardId": 7,
+    "short": "sogov",
+    "name": "Socialist Governments",
+    "eventType": "ussr",
+    "ops": 3,
+    "canBeRemoved": false,
+    "war": "early"
+  },
+  {
+    "cardId": 8,
+    "short": "fidel",
+    "name": "Fidel",
+    "eventType": "ussr",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 9,
+    "short": "viet",
+    "name": "Vietnam Revolts",
+    "eventType": "ussr",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 10,
+    "short": "block",
+    "name": "Blockade",
+    "eventType": "ussr",
+    "ops": 1,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 11,
+    "short": "kowar",
+    "name": "Korean War",
+    "eventType": "ussr",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 12,
+    "short": "roman",
+    "name": "Romanian Abdication",
+    "eventType": "ussr",
+    "ops": 1,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 13,
+    "short": "aiwar",
+    "name": "Arab-Israeli War",
+    "eventType": "ussr",
+    "ops": 2,
+    "canBeRemoved": false,
+    "war": "early"
+  },
+  {
+    "cardId": 14,
+    "short": "comecon",
+    "name": "Comecon",
+    "eventType": "ussr",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 15,
+    "short": "nasser",
+    "name": "Nasser",
+    "eventType": "ussr",
+    "ops": 1,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 16,
+    "short": "warsaw",
+    "name": "Warsaw Pact Formed",
+    "eventType": "ussr",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 17,
+    "short": "degau",
+    "name": "De Gaulle Leads France",
+    "eventType": "ussr",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 18,
+    "short": "nazi",
+    "name": "Captured Nazi Scientist",
+    "eventType": "neutral",
+    "ops": 1,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 19,
+    "short": "truman",
+    "name": "Truman Doctrine",
+    "eventType": "us",
+    "ops": 1,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 20,
+    "short": "olym",
+    "name": "Olympic Games",
+    "eventType": "neutral",
+    "ops": 2,
+    "canBeRemoved": false,
+    "war": "early"
+  },
+  {
+    "cardId": 21,
+    "short": "nato",
+    "name": "NATO",
+    "eventType": "us",
+    "ops": 4,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 22,
+    "short": "ireds",
+    "name": "Independent Reds",
+    "eventType": "us",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 23,
+    "short": "marsh",
+    "name": "Marshall Plan",
+    "eventType": "us",
+    "ops": 4,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 24,
+    "short": "ipwar",
+    "name": "Indo-Pakistani War",
+    "eventType": "neutral",
+    "ops": 2,
+    "canBeRemoved": false,
+    "war": "early"
+  },
+  {
+    "cardId": 25,
+    "short": "contain",
+    "name": "Containment",
+    "eventType": "us",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 26,
+    "short": "cia",
+    "name": "CIA Created",
+    "eventType": "us",
+    "ops": 1,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 27,
+    "short": "usjap",
+    "name": "US/Japan Mutual Defense Pact",
+    "eventType": "us",
+    "ops": 4,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 28,
+    "short": "suez",
+    "name": "Suez Crisis",
+    "eventType": "ussr",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 29,
+    "short": "eeu",
+    "name": "East European Unrest",
+    "eventType": "us",
+    "ops": 3,
+    "canBeRemoved": false,
+    "war": "early"
+  },
+  {
+    "cardId": 30,
+    "short": "decol",
+    "name": "Decolonization",
+    "eventType": "ussr",
+    "ops": 2,
+    "canBeRemoved": false,
+    "war": "early"
+  },
+  {
+    "cardId": 31,
+    "short": "redsp",
+    "name": "Red Scare/Purge",
+    "eventType": "neutral",
+    "ops": 4,
+    "canBeRemoved": false,
+    "war": "early"
+  },
+  {
+    "cardId": 32,
+    "short": "unint",
+    "name": "UN Intervention",
+    "eventType": "neutral",
+    "ops": 1,
+    "canBeRemoved": false,
+    "war": "early"
+  },
+  {
+    "cardId": 33,
+    "short": "destal",
+    "name": "De-Stalinization",
+    "eventType": "ussr",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 34,
+    "short": "ntb",
+    "name": "Nuclear Test Ban",
+    "eventType": "neutral",
+    "ops": 4,
+    "canBeRemoved": false,
+    "war": "early"
+  },
+  {
+    "cardId": 35,
+    "short": "formo",
+    "name": "Formosan Resolution",
+    "eventType": "us",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 103,
+    "short": "defect",
+    "name": "Defectors",
+    "eventType": "us",
+    "ops": 2,
+    "canBeRemoved": false,
+    "war": "early"
+  },
+  {
     "name": "ABM Treaty",
     "canBeRemoved": false,
     "eventType": "neutral",
     "ops": 4,
-    "war": "early"
-  },
-  {
-    "name": "CIA Created",
-    "canBeRemoved": true,
-    "eventType": "us",
-    "ops": 1,
-    "war": "early"
-  },
-  {
-    "name": "Blockade",
-    "canBeRemoved": true,
-    "eventType": "ussr",
-    "ops": 1,
-    "war": "early"
-  },
-  {
-    "name": "Duck and Cover",
-    "canBeRemoved": false,
-    "eventType": "us",
-    "ops": 3,
-    "war": "early"
-  },
-  {
-    "name": "Europe Scoring",
-    "canBeRemoved": false,
-    "eventType": "neutral",
-    "ops": 0,
-    "war": "early"
+    "war": "mid"
   },
   {
     "name": "Voice of America",

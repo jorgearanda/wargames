@@ -21,6 +21,9 @@
     <div class="game-title-container">
         <input type="text" id="game-title" class="game-title-input" placeholder="Enter game title...">
         <div class="title-buttons">
+            <label class="short-checkbox-label">
+                <input type="checkbox" id="short-names-checkbox"> Short
+            </label>
             <button id="add-discards-btn" class="title-btn">Add Discards</button>
             <button id="add-mid-btn" class="title-btn">Add Mid</button>
             <button id="add-late-btn" class="title-btn">Add Late</button>
@@ -28,11 +31,9 @@
         </div>
     </div>
 
-    <div class="game-notes-container">
-        <textarea id="game-notes" class="game-notes" placeholder="Enter notes about this game..."></textarea>
-    </div>
-
-    <div class="locations">
+    <div class="main-layout">
+        <div class="main-content">
+            <div class="locations">
         <div class="hand-row">
             <div class="location">
                 <div class="location-header">
@@ -84,6 +85,15 @@
             <div class="location">
                 <h2>Removed</h2>
                 <div class="card-area" id="removed"></div>
+            </div>
+        </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <h3>Notes</h3>
+                <textarea id="game-notes" class="game-notes" placeholder="Enter notes about this game..."></textarea>
             </div>
         </div>
     </div>

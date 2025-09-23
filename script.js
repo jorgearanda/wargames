@@ -1,4 +1,6 @@
 let selectedHandLocation = 'your-hand'; // Default to Your Hand
+let useShortNames = false; // Global variable to track short name display
+let fullCardData = {}; // Store full card data by name for lookup
 
 // Undo system
 let actionHistory = [];
@@ -21,6 +23,10 @@ function createCardElement(cardData, currentLocation = null) {
     cardDiv.className = 'card';
     cardDiv.dataset.war = cardData.war || 'early';
     cardDiv.dataset.canBeRemoved = cardData.canBeRemoved ? 'true' : 'false';
+
+    // Store full card data for name switching
+    cardDiv.dataset.cardName = cardData.name || '';
+    cardDiv.dataset.cardShort = cardData.short || '';
 
     const actionsDiv = document.createElement('div');
     actionsDiv.className = 'card-actions';
@@ -46,7 +52,8 @@ function createCardElement(cardData, currentLocation = null) {
     if (cardData.eventType) {
         cardText.classList.add(cardData.eventType);
     }
-    cardText.textContent = `${cardData.ops}  ${cardData.name}`;
+    const displayName = useShortNames ? (cardData.short || cardData.name) : cardData.name;
+    cardText.textContent = `${cardData.ops}  ${displayName}`;
 
     actionsDiv.appendChild(removeIcon);
     actionsDiv.appendChild(discardIcon);
@@ -103,8 +110,8 @@ function createUnknownCardElement() {
 
     const cardText = document.createElement('span');
     cardText.className = 'card-text unknown-card-text';
-    const deckAvg = calculateDeckAverage();
-    cardText.textContent = `${deckAvg.toFixed(1)}  ?`;
+    const deckStats = calculateDeckAverage();
+    cardText.textContent = `${deckStats.average.toFixed(1)}  ?`;
 
     actionsDiv.appendChild(emptySpace);
     actionsDiv.appendChild(minusIcon);
@@ -112,6 +119,30 @@ function createUnknownCardElement() {
     cardDiv.appendChild(cardText);
 
     return cardDiv;
+}
+
+async function loadCardDatabase() {
+    try {
+        console.log('Loading card database from cards.json');
+        const response = await fetch('cards.json');
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const cards = await response.json();
+
+        // Store full card data for lookup by name
+        cards.forEach(card => {
+            fullCardData[card.name] = card;
+        });
+
+        console.log('Card database loaded successfully');
+        return cards;
+    } catch (error) {
+        console.error('Error loading card database:', error);
+        throw error;
+    }
 }
 
 async function loadCards() {
@@ -126,6 +157,11 @@ async function loadCards() {
 
         const cards = await response.json();
         console.log('Cards loaded successfully:', cards);
+
+        // Store full card data for lookup by name
+        cards.forEach(card => {
+            fullCardData[card.name] = card;
+        });
 
         cards.forEach(cardData => {
             let targetLocation, targetLocationId;
@@ -174,10 +210,27 @@ function getCardData(cardElement) {
     if (opsMatch) {
         return {
             ops: parseFloat(opsMatch[1]),
-            name: opsMatch[2]
+            name: cardElement.dataset.cardName || opsMatch[2], // Use stored full name if available
+            short: cardElement.dataset.cardShort || opsMatch[2] // Include short name too
         };
     }
-    return { ops: 0, name: cardText };
+    return {
+        ops: 0,
+        name: cardElement.dataset.cardName || cardText,
+        short: cardElement.dataset.cardShort || cardText
+    };
+}
+
+function enrichCardData(savedCardData) {
+    // If we have the full card data for this name, merge it
+    if (fullCardData[savedCardData.name]) {
+        return {
+            ...fullCardData[savedCardData.name],
+            ops: savedCardData.ops // Keep the ops from saved data in case it was modified
+        };
+    }
+    // Fallback to saved data if not found in full data
+    return savedCardData;
 }
 
 function sortCardsInContainer(container) {
@@ -202,14 +255,18 @@ function sortCardsInContainer(container) {
 
 function calculateAverageOps(container) {
     const cards = Array.from(container.children);
-    if (cards.length === 0) return 0;
+    if (cards.length === 0) return { count: 0, sum: 0, average: 0 };
 
     const totalOps = cards.reduce((sum, card) => {
         const data = getCardData(card);
         return sum + data.ops;
     }, 0);
 
-    return totalOps / cards.length;
+    return {
+        count: cards.length,
+        sum: totalOps,
+        average: totalOps / cards.length
+    };
 }
 
 function calculateDeckAverage() {
@@ -222,14 +279,18 @@ function calculateDeckAverage() {
         ...Array.from(deckUSSR.children)
     ];
 
-    if (allDeckCards.length === 0) return 0;
+    if (allDeckCards.length === 0) return { count: 0, sum: 0, average: 0 };
 
     const totalOps = allDeckCards.reduce((sum, card) => {
         const data = getCardData(card);
         return sum + data.ops;
     }, 0);
 
-    return totalOps / allDeckCards.length;
+    return {
+        count: allDeckCards.length,
+        sum: totalOps,
+        average: totalOps / allDeckCards.length
+    };
 }
 
 // Undo system functions
@@ -413,44 +474,27 @@ function restoreGameSnapshot(snapshot, options = {}) {
 
 function updateLocationAverages() {
     // First update all unknown cards with current deck average
-    const deckAvg = calculateDeckAverage();
+    const deckStats = calculateDeckAverage();
     const unknownCards = document.querySelectorAll('.unknown-card-text');
     unknownCards.forEach(cardText => {
-        cardText.textContent = `${deckAvg.toFixed(1)}  ?`;
+        cardText.textContent = `${deckStats.average.toFixed(1)}  ?`;
     });
 
     // Update Your Hand average
     const yourHandContainer = document.getElementById('your-hand');
-    const yourHandAvg = calculateAverageOps(yourHandContainer);
+    const yourHandStats = calculateAverageOps(yourHandContainer);
     document.getElementById('your-hand-avg').textContent =
-        yourHandContainer.children.length > 0 ? `${yourHandAvg.toFixed(1)}/card` : '';
+        yourHandStats.count > 0 ? `${yourHandStats.count} cards, ${yourHandStats.sum} ops, ${yourHandStats.average.toFixed(1)}/card` : '';
 
     // Update Opponent's Hand average
     const opponentHandContainer = document.getElementById('opponent-hand');
-    const opponentHandAvg = calculateAverageOps(opponentHandContainer);
+    const opponentHandStats = calculateAverageOps(opponentHandContainer);
     document.getElementById('opponent-hand-avg').textContent =
-        opponentHandContainer.children.length > 0 ? `${opponentHandAvg.toFixed(1)}/card` : '';
+        opponentHandStats.count > 0 ? `${opponentHandStats.count} cards, ${opponentHandStats.sum} ops, ${opponentHandStats.average.toFixed(1)}/card` : '';
 
-    // Update Deck average (combine all subsections)
-    const deckUS = document.getElementById('deck-us');
-    const deckNeutral = document.getElementById('deck-neutral');
-    const deckUSSR = document.getElementById('deck-ussr');
-    const allDeckCards = [
-        ...Array.from(deckUS.children),
-        ...Array.from(deckNeutral.children),
-        ...Array.from(deckUSSR.children)
-    ];
-
-    if (allDeckCards.length > 0) {
-        const totalOps = allDeckCards.reduce((sum, card) => {
-            const data = getCardData(card);
-            return sum + data.ops;
-        }, 0);
-        const deckAvgForDisplay = totalOps / allDeckCards.length;
-        document.getElementById('deck-avg').textContent = `${deckAvgForDisplay.toFixed(1)}/card`;
-    } else {
-        document.getElementById('deck-avg').textContent = '';
-    }
+    // Update Deck average
+    document.getElementById('deck-avg').textContent =
+        deckStats.count > 0 ? `${deckStats.count} cards, ${deckStats.sum} ops, ${deckStats.average.toFixed(1)}/card` : '';
 }
 
 function moveCard(cardElement, targetLocationId, options = {}) {
@@ -689,7 +733,8 @@ function restoreCardPositions(positions, options = {}) {
                 if (cardData.isUnknown || cardData.name === '?') {
                     cardElement = createUnknownCardElement();
                 } else {
-                    cardElement = createCardElement(cardData, locationId);
+                    const enrichedCardData = enrichCardData(cardData);
+                    cardElement = createCardElement(enrichedCardData, locationId);
                 }
                 container.appendChild(cardElement);
 
@@ -1283,13 +1328,34 @@ function importGame() {
     document.getElementById('import-game-input').click();
 }
 
+function refreshCardDisplays() {
+    // Get all cards and update their display names
+    const allCards = document.querySelectorAll('.card:not(.unknown-card)');
+    allCards.forEach(cardElement => {
+        const cardText = cardElement.querySelector('.card-text');
+        if (cardText && cardElement.dataset.cardName && cardElement.dataset.cardShort) {
+            const displayName = useShortNames ? cardElement.dataset.cardShort : cardElement.dataset.cardName;
+            const opsMatch = cardText.textContent.match(/^(\d+(?:\.\d+)?)  /);
+            const ops = opsMatch ? opsMatch[1] : '';
+            cardText.textContent = `${ops}  ${displayName}`;
+        }
+    });
+}
+
 // Load cards and initialize game management
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     console.log('DOM Content Loaded');
     updateGameSelector();
     updateUndoButtonState(); // Initialize undo button state
 
     // Automated tests available in console: testUndo(), testUndoScenarios(), showUndoTestingGuide()
+
+    // Always load card database first for short name lookup
+    try {
+        await loadCardDatabase();
+    } catch (error) {
+        console.error('Failed to load card database:', error);
+    }
 
     // Try to load the last current game, or load default cards
     const currentId = getCurrentGameId();
@@ -1404,5 +1470,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (getCurrentGameId() && !isLoading) {
             saveCurrentGame();
         }
+    });
+
+    // Short names checkbox event listener
+    document.getElementById('short-names-checkbox').addEventListener('change', function() {
+        useShortNames = this.checked;
+        refreshCardDisplays();
     });
 });
