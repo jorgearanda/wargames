@@ -15,7 +15,8 @@ const ACTION_TYPES = {
     REMOVE_UNKNOWN: 'remove_unknown',
     ADD_DISCARDS: 'add_discards',
     ADD_MID_WAR: 'add_mid_war',
-    ADD_LATE_WAR: 'add_late_war'
+    ADD_LATE_WAR: 'add_late_war',
+    REORDER_HAND: 'reorder_hand'
 };
 
 function createCardElement(cardData, currentLocation = null) {
@@ -60,7 +61,97 @@ function createCardElement(cardData, currentLocation = null) {
     cardDiv.appendChild(actionsDiv);
     cardDiv.appendChild(cardText);
 
+    // Add drag functionality for cards in hand locations
+    if (currentLocation && currentLocation.includes('hand')) {
+        setupCardDragging(cardDiv);
+    }
+
     return cardDiv;
+}
+
+function setupCardDragging(cardElement) {
+    cardElement.draggable = true;
+
+    cardElement.addEventListener('dragstart', function(e) {
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', cardElement.outerHTML);
+        e.dataTransfer.setData('text/plain', cardElement.dataset.cardName);
+        cardElement.classList.add('dragging');
+
+        // Store reference to dragged element
+        cardElement._draggedElement = cardElement;
+    });
+
+    cardElement.addEventListener('dragend', function(e) {
+        cardElement.classList.remove('dragging');
+        delete cardElement._draggedElement;
+
+        // Clean up any drag indicators
+        document.querySelectorAll('.drag-over').forEach(el => {
+            el.classList.remove('drag-over');
+        });
+    });
+}
+
+function setupHandDropZone(handContainer) {
+    handContainer.addEventListener('dragover', function(e) {
+        if (!e.dataTransfer.types.includes('text/html')) return;
+
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+
+        const draggingCard = document.querySelector('.dragging');
+        if (!draggingCard) return;
+
+        // Find the card we're hovering over
+        const afterElement = getDragAfterElement(handContainer, e.clientY);
+
+        if (afterElement == null) {
+            handContainer.appendChild(draggingCard);
+        } else {
+            handContainer.insertBefore(draggingCard, afterElement);
+        }
+    });
+
+    handContainer.addEventListener('drop', function(e) {
+        e.preventDefault();
+
+        const draggingCard = document.querySelector('.dragging');
+        if (!draggingCard || !handContainer.contains(draggingCard)) return;
+
+        // Record action for undo
+        const action = recordAction(ACTION_TYPES.REORDER_HAND, {
+            location: handContainer.id,
+            cardName: draggingCard.dataset.cardName
+        });
+
+        updateLocationAverages();
+
+        // Finalize action for undo
+        if (action) {
+            finalizeAction(action);
+        }
+
+        // Auto-save current game state
+        if (getCurrentGameId()) {
+            saveCurrentGame();
+        }
+    });
+}
+
+function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('.card:not(.dragging)')];
+
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
 function updateCardButtonVisibility(cardElement, newLocationId) {
@@ -233,7 +324,17 @@ function enrichCardData(savedCardData) {
     return savedCardData;
 }
 
+function shouldAutoSort(containerId) {
+    // Don't auto-sort hand locations - allow manual sorting
+    return !containerId.includes('hand');
+}
+
 function sortCardsInContainer(container) {
+    // Skip sorting for hand locations
+    if (!shouldAutoSort(container.id)) {
+        return;
+    }
+
     const cards = Array.from(container.children);
     cards.sort((a, b) => {
         const dataA = getCardData(a);
@@ -368,7 +469,8 @@ function getActionDisplayName(actionType) {
         [ACTION_TYPES.REMOVE_UNKNOWN]: 'Remove Unknown Card',
         [ACTION_TYPES.ADD_DISCARDS]: 'Add Discards',
         [ACTION_TYPES.ADD_MID_WAR]: 'Add Mid War Cards',
-        [ACTION_TYPES.ADD_LATE_WAR]: 'Add Late War Cards'
+        [ACTION_TYPES.ADD_LATE_WAR]: 'Add Late War Cards',
+        [ACTION_TYPES.REORDER_HAND]: 'Reorder Hand'
     };
     return displayNames[actionType] || actionType;
 }
@@ -530,6 +632,15 @@ function moveCard(cardElement, targetLocationId, options = {}) {
 
     // Update button visibility based on actual final location
     updateCardButtonVisibility(cardElement, actualLocationId);
+
+    // Enable dragging if moved to a hand location
+    if (actualLocationId.includes('hand')) {
+        setupCardDragging(cardElement);
+    } else {
+        // Remove dragging if moved away from hand
+        cardElement.draggable = false;
+        cardElement.classList.remove('dragging');
+    }
 
     // Update averages after moving card
     updateLocationAverages();
@@ -1477,4 +1588,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         useShortNames = this.checked;
         refreshCardDisplays();
     });
+
+    // Initialize drag-and-drop for hand locations
+    setupHandDropZone(document.getElementById('your-hand'));
+    setupHandDropZone(document.getElementById('opponent-hand'));
 });

@@ -79,6 +79,20 @@ h2 {
     background: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 4px;
+    transition: opacity 0.2s ease;
+}
+
+/* Drag and drop styles */
+.card.dragging {
+    opacity: 0.5;
+}
+
+.card[draggable="true"] {
+    cursor: move;
+}
+
+.card[draggable="true"]:hover {
+    background: #f0f0f0;
 }
 
 .card-actions {
