@@ -73,7 +73,7 @@
   },
   {
     "cardId": 10,
-    "short": "block",
+    "short": "blockade",
     "name": "Blockade",
     "eventType": "ussr",
     "ops": 1,
@@ -91,7 +91,7 @@
   },
   {
     "cardId": 12,
-    "short": "roman",
+    "short": "romanian",
     "name": "Romanian Abdication",
     "eventType": "ussr",
     "ops": 1,
@@ -136,7 +136,7 @@
   },
   {
     "cardId": 17,
-    "short": "degau",
+    "short": "degaulle",
     "name": "De Gaulle Leads France",
     "eventType": "ussr",
     "ops": 3,
@@ -163,7 +163,7 @@
   },
   {
     "cardId": 20,
-    "short": "olym",
+    "short": "olympic",
     "name": "Olympic Games",
     "eventType": "neutral",
     "ops": 2,
@@ -181,7 +181,7 @@
   },
   {
     "cardId": 22,
-    "short": "ireds",
+    "short": "indreds",
     "name": "Independent Reds",
     "eventType": "us",
     "ops": 2,
@@ -190,7 +190,7 @@
   },
   {
     "cardId": 23,
-    "short": "marsh",
+    "short": "marshall",
     "name": "Marshall Plan",
     "eventType": "us",
     "ops": 4,
@@ -226,7 +226,7 @@
   },
   {
     "cardId": 27,
-    "short": "usjap",
+    "short": "usjapan",
     "name": "US/Japan Mutual Defense Pact",
     "eventType": "us",
     "ops": 4,
@@ -271,7 +271,7 @@
   },
   {
     "cardId": 32,
-    "short": "unint",
+    "short": "uninter",
     "name": "UN Intervention",
     "eventType": "neutral",
     "ops": 1,
@@ -298,7 +298,7 @@
   },
   {
     "cardId": 35,
-    "short": "formo",
+    "short": "formosan",
     "name": "Formosan Resolution",
     "eventType": "us",
     "ops": 2,
@@ -315,52 +315,669 @@
     "war": "early"
   },
   {
-    "name": "ABM Treaty",
+    "cardId": 104,
+    "short": "cambr",
+    "name": "The Cambridge Five",
+    "eventType": "ussr",
+    "ops": 2,
     "canBeRemoved": false,
-    "eventType": "neutral",
-    "ops": 4,
-    "war": "mid"
+    "war": "early"
   },
   {
-    "name": "Voice of America",
-    "canBeRemoved": false,
+    "cardId": 105,
+    "short": "sprel",
+    "name": "Special Relationship",
     "eventType": "us",
     "ops": 2,
-    "war": "mid"
-  },
-  {
-    "name": "Lone Gunman",
-    "canBeRemoved": true,
-    "eventType": "ussr",
-    "ops": 1,
-    "war": "mid"
-  },
-  {
-    "name": "Arms Race",
     "canBeRemoved": false,
+    "war": "early"
+  },
+  {
+    "cardId": 106,
+    "short": "norad",
+    "name": "NORAD",
+    "eventType": "us",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "early"
+  },
+  {
+    "cardId": 36,
+    "short": "brush",
+    "name": "Brush War",
     "eventType": "neutral",
     "ops": 3,
+    "canBeRemoved": false,
     "war": "mid"
   },
   {
-    "name": "Wargames",
-    "canBeRemoved": true,
+    "cardId": 37,
+    "short": "casco",
+    "name": "Central America Scoring",
     "eventType": "neutral",
-    "ops": 4,
-    "war": "late"
+    "ops": 0,
+    "canBeRemoved": false,
+    "war": "mid"
   },
   {
-    "name": "Star Wars",
+    "cardId": 38,
+    "short": "seasco",
+    "name": "Southeast Asia Scoring",
+    "eventType": "neutral",
+    "ops": 0,
     "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 39,
+    "short": "armsrace",
+    "name": "Arms Race",
+    "eventType": "neutral",
+    "ops": 3,
+    "canBeRemoved": false,
+    "war": "mid"
+  },
+  {
+    "cardId": 40,
+    "short": "cuban",
+    "name": "Cuban Missile Crisis",
+    "eventType": "neutral",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 41,
+    "short": "subs",
+    "name": "Nuclear Subs",
     "eventType": "us",
     "ops": 2,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 42,
+    "short": "quagmire",
+    "name": "Quagmire",
+    "eventType": "ussr",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 43,
+    "short": "salt",
+    "name": "SALT Negotiations",
+    "eventType": "neutral",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 44,
+    "short": "beartrap",
+    "name": "Bear Trap",
+    "eventType": "us",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 45,
+    "short": "summit",
+    "name": "Summit",
+    "eventType": "neutral",
+    "ops": 1,
+    "canBeRemoved": false,
+    "war": "mid"
+  },
+  {
+    "cardId": 46,
+    "short": "howi",
+    "name": "How I Learned to Stop Worrying",
+    "eventType": "neutral",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 47,
+    "short": "junta",
+    "name": "Junta",
+    "eventType": "neutral",
+    "ops": 2,
+    "canBeRemoved": false,
+    "war": "mid"
+  },
+  {
+    "cardId": 48,
+    "short": "kitchen",
+    "name": "Kitchen Debates",
+    "eventType": "us",
+    "ops": 1,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 49,
+    "short": "envy",
+    "name": "Missile Envy",
+    "eventType": "neutral",
+    "ops": 2,
+    "canBeRemoved": false,
+    "war": "mid"
+  },
+  {
+    "cardId": 50,
+    "short": "bury",
+    "name": "We Will Bury You",
+    "eventType": "ussr",
+    "ops": 4,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 51,
+    "short": "brezhnev",
+    "name": "Brezhnev Doctrine",
+    "eventType": "ussr",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 52,
+    "short": "portug",
+    "name": "Portuguese Empire Crumbles",
+    "eventType": "ussr",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 53,
+    "short": "saunrest",
+    "name": "South African Unrest",
+    "eventType": "ussr",
+    "ops": 2,
+    "canBeRemoved": false,
+    "war": "mid"
+  },
+  {
+    "cardId": 54,
+    "short": "allende",
+    "name": "Allende",
+    "eventType": "ussr",
+    "ops": 1,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 55,
+    "short": "willy",
+    "name": "Willy Brandt",
+    "eventType": "ussr",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 56,
+    "short": "muslim",
+    "name": "Muslim Revolution",
+    "eventType": "ussr",
+    "ops": 4,
+    "canBeRemoved": false,
+    "war": "mid"
+  },
+  {
+    "cardId": 57,
+    "short": "abm",
+    "name": "ABM Treaty",
+    "eventType": "neutral",
+    "ops": 4,
+    "canBeRemoved": false,
+    "war": "mid"
+  },
+  {
+    "cardId": 58,
+    "short": "cult",
+    "name": "Cultural Revolution",
+    "eventType": "ussr",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 59,
+    "short": "flower",
+    "name": "Flower Power",
+    "eventType": "ussr",
+    "ops": 4,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 60,
+    "short": "u2",
+    "name": "U2 Incident",
+    "eventType": "ussr",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 61,
+    "short": "opec",
+    "name": "OPEC",
+    "eventType": "ussr",
+    "ops": 3,
+    "canBeRemoved": false,
+    "war": "mid"
+  },
+  {
+    "cardId": 62,
+    "short": "lone",
+    "name": "Lone Gunman",
+    "eventType": "ussr",
+    "ops": 1,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 63,
+    "short": "rear",
+    "name": "Colonial Rearguards",
+    "eventType": "us",
+    "ops": 2,
+    "canBeRemoved": false,
+    "war": "mid"
+  },
+  {
+    "cardId": 64,
+    "short": "canal",
+    "name": "Panama Canal Returned",
+    "eventType": "us",
+    "ops": 1,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 65,
+    "short": "camp",
+    "name": "Camp David Accords",
+    "eventType": "us",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 66,
+    "short": "puppet",
+    "name": "Puppet Governments",
+    "eventType": "us",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 67,
+    "short": "grain",
+    "name": "Grain Sales to Soviets",
+    "eventType": "us",
+    "ops": 2,
+    "canBeRemoved": false,
+    "war": "mid"
+  },
+  {
+    "cardId": 68,
+    "short": "jpii",
+    "name": "John Paul II Elected Pope",
+    "eventType": "us",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 69,
+    "short": "lads",
+    "name": "Latin American Death Squads",
+    "eventType": "neutral",
+    "ops": 2,
+    "canBeRemoved": false,
+    "war": "mid"
+  },
+  {
+    "cardId": 70,
+    "short": "oas",
+    "name": "OAS Founded",
+    "eventType": "us",
+    "ops": 1,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 71,
+    "short": "nixon",
+    "name": "Nixon Plays the China Card",
+    "eventType": "us",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 72,
+    "short": "sadat",
+    "name": "Sadat Expels Soviets",
+    "eventType": "us",
+    "ops": 1,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 73,
+    "short": "shuttle",
+    "name": "Shuttle Diplomacy",
+    "eventType": "us",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 74,
+    "short": "voice",
+    "name": "The Voice of America",
+    "eventType": "us",
+    "ops": 2,
+    "canBeRemoved": false,
+    "war": "mid"
+  },
+  {
+    "cardId": 75,
+    "short": "theo",
+    "name": "Liberation Theology",
+    "eventType": "ussr",
+    "ops": 2,
+    "canBeRemoved": false,
+    "war": "mid"
+  },
+  {
+    "cardId": 76,
+    "short": "ussuri",
+    "name": "Ussuri River Skirmish",
+    "eventType": "us",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 77,
+    "short": "asknot",
+    "name": "Ask Not What Your Country...",
+    "eventType": "us",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 78,
+    "short": "afp",
+    "name": "Alliance for Progress",
+    "eventType": "us",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 79,
+    "short": "afsco",
+    "name": "Africa Scoring",
+    "eventType": "neutral",
+    "ops": 0,
+    "canBeRemoved": false,
+    "war": "mid"
+  },
+  {
+    "cardId": 80,
+    "short": "small",
+    "name": "One Small Step...",
+    "eventType": "neutral",
+    "ops": 2,
+    "canBeRemoved": false,
+    "war": "mid"
+  },
+  {
+    "cardId": 81,
+    "short": "sasco",
+    "name": "South America Scoring",
+    "eventType": "neutral",
+    "ops": 0,
+    "canBeRemoved": false,
+    "war": "mid"
+  },
+  {
+    "cardId": 107,
+    "short": "che",
+    "name": "Che",
+    "eventType": "ussr",
+    "ops": 3,
+    "canBeRemoved": false,
+    "war": "mid"
+  },
+  {
+    "cardId": 108,
+    "short": "ourman",
+    "name": "Our Man in Tehran",
+    "eventType": "us",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "mid"
+  },
+  {
+    "cardId": 82,
+    "short": "hostage",
+    "name": "Iranian Hostage Crisis",
+    "eventType": "ussr",
+    "ops": 3,
+    "canBeRemoved": true,
     "war": "late"
   },
   {
-    "name": "Glasnost",
+    "cardId": 83,
+    "short": "lady",
+    "name": "The Iron Lady",
+    "eventType": "us",
+    "ops": 3,
     "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 84,
+    "short": "reabomb",
+    "name": "Reagan Bombs Libya",
+    "eventType": "us",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 85,
+    "short": "starwars",
+    "name": "Star Wars",
+    "eventType": "us",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 86,
+    "short": "nsoil",
+    "name": "North Sea Oil",
+    "eventType": "us",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 87,
+    "short": "reformer",
+    "name": "The Reformer",
+    "eventType": "ussr",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 88,
+    "short": "marine",
+    "name": "Marine Barracks Bombing",
+    "eventType": "ussr",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 89,
+    "short": "kal007",
+    "name": "Soviets Shoot Down KAL-007",
+    "eventType": "us",
+    "ops": 4,
+    "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 90,
+    "short": "glasnost",
+    "name": "Glasnost",
     "eventType": "ussr",
     "ops": 4,
+    "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 91,
+    "short": "ortega",
+    "name": "Ortega Elected in Nicaragua",
+    "eventType": "ussr",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 92,
+    "short": "terror",
+    "name": "Terrorism",
+    "eventType": "neutral",
+    "ops": 2,
+    "canBeRemoved": false,
+    "war": "late"
+  },
+  {
+    "cardId": 93,
+    "short": "contra",
+    "name": "Iran Contra Scandal",
+    "eventType": "ussr",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 94,
+    "short": "chernob",
+    "name": "Chernobyl",
+    "eventType": "us",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 95,
+    "short": "debt",
+    "name": "Latin American Debt Crisis",
+    "eventType": "ussr",
+    "ops": 2,
+    "canBeRemoved": false,
+    "war": "late"
+  },
+  {
+    "cardId": 96,
+    "short": "teardown",
+    "name": "Tear Down this Wall",
+    "eventType": "us",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 97,
+    "short": "evil",
+    "name": "An Evil Empire",
+    "eventType": "us",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 98,
+    "short": "aldrich",
+    "name": "Aldrich Ames Remix",
+    "eventType": "ussr",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 99,
+    "short": "pershing",
+    "name": "Pershing II Deployed",
+    "eventType": "ussr",
+    "ops": 3,
+    "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 100,
+    "short": "wargames",
+    "name": "Wargames",
+    "eventType": "neutral",
+    "ops": 4,
+    "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 101,
+    "short": "solidar",
+    "name": "Solidarity",
+    "eventType": "us",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 102,
+    "short": "iiwar",
+    "name": "Iran-Iraq War",
+    "eventType": "neutral",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 109,
+    "short": "yuri",
+    "name": "Yuri and Samantha",
+    "eventType": "ussr",
+    "ops": 2,
+    "canBeRemoved": true,
+    "war": "late"
+  },
+  {
+    "cardId": 110,
+    "short": "awacs",
+    "name": "AWACS Sales to Saudis",
+    "eventType": "us",
+    "ops": 3,
+    "canBeRemoved": true,
     "war": "late"
   }
 ]
