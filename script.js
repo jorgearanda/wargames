@@ -591,6 +591,18 @@ function updateLocationAverages() {
     // Update Deck average
     document.getElementById('deck-avg').textContent =
         deckStats.count > 0 ? `${deckStats.count} cards, ${deckStats.sum.toFixed(1)} ops, ${deckStats.average.toFixed(1)}/card` : '';
+
+    // Update Discard count
+    const discardContainer = document.getElementById('discard');
+    const discardCount = discardContainer.children.length;
+    document.getElementById('discard-count').textContent =
+        discardCount > 0 ? `${discardCount} card${discardCount !== 1 ? 's' : ''}` : '';
+
+    // Update Removed count
+    const removedContainer = document.getElementById('removed');
+    const removedCount = removedContainer.children.length;
+    document.getElementById('removed-count').textContent =
+        removedCount > 0 ? `${removedCount} card${removedCount !== 1 ? 's' : ''}` : '';
 }
 
 function moveCard(cardElement, targetLocationId, options = {}) {
