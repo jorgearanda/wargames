@@ -991,139 +991,75 @@ function updateGameSelector() {
     });
 }
 
-function addDiscards(options = {}) {
-    // Record action for undo
-    const action = !options.skipUndo ? recordAction(ACTION_TYPES.ADD_DISCARDS) : null;
+function sortAllDeckSubsections() {
+    sortCardsInContainer(document.getElementById('deck-us'));
+    sortCardsInContainer(document.getElementById('deck-neutral'));
+    sortCardsInContainer(document.getElementById('deck-ussr'));
+}
 
-    // Step 1: Move all cards from Deck subsections to Opponent's Hand
-    const deckUS = document.getElementById('deck-us');
-    const deckNeutral = document.getElementById('deck-neutral');
-    const deckUSSR = document.getElementById('deck-ussr');
-    const opponentHand = document.getElementById('opponent-hand');
-
-    // Collect all deck cards
-    const allDeckCards = [
-        ...Array.from(deckUS.children),
-        ...Array.from(deckNeutral.children),
-        ...Array.from(deckUSSR.children)
-    ];
-
-    // Move each deck card to opponent's hand
-    allDeckCards.forEach(card => {
-        card.remove();
-        opponentHand.appendChild(card);
-    });
-
-    // Sort opponent's hand
-    sortCardsInContainer(opponentHand);
-
-    // Step 2: Move all cards from Discard to appropriate Deck subsections
-    const discardPile = document.getElementById('discard');
-    const discardCards = Array.from(discardPile.children);
-
-    discardCards.forEach(card => {
-        // Get the card's event type from its text element
+function moveCardsToDeckByEventType(cards) {
+    cards.forEach(card => {
         const eventType = getCardEventType(card);
-
-        // Move to appropriate deck subsection
         card.remove();
         const targetDeckSubsection = getDeckSubsection(eventType);
         targetDeckSubsection.appendChild(card);
     });
+    sortAllDeckSubsections();
+}
 
-    // Sort all deck subsections
-    sortCardsInContainer(deckUS);
-    sortCardsInContainer(deckNeutral);
-    sortCardsInContainer(deckUSSR);
-
-    // Update averages
+function finalizeBulkOperation(action) {
     updateLocationAverages();
-
-    // Finalize action for undo
     if (action) {
         finalizeAction(action);
     }
-
-    // Auto-save current game state
     autoSaveIfNeeded();
 }
 
+function addDiscards(options = {}) {
+    const action = !options.skipUndo ? recordAction(ACTION_TYPES.ADD_DISCARDS) : null;
+
+    // Step 1: Move all cards from Deck subsections to Opponent's Hand
+    const opponentHand = document.getElementById('opponent-hand');
+    const allDeckCards = [
+        ...Array.from(document.getElementById('deck-us').children),
+        ...Array.from(document.getElementById('deck-neutral').children),
+        ...Array.from(document.getElementById('deck-ussr').children)
+    ];
+
+    allDeckCards.forEach(card => {
+        card.remove();
+        opponentHand.appendChild(card);
+    });
+    sortCardsInContainer(opponentHand);
+
+    // Step 2: Move all cards from Discard to appropriate Deck subsections
+    const discardCards = Array.from(document.getElementById('discard').children);
+    moveCardsToDeckByEventType(discardCards);
+
+    finalizeBulkOperation(action);
+}
+
 function addMidWar(options = {}) {
-    // Record action for undo
     const action = !options.skipUndo ? recordAction(ACTION_TYPES.ADD_MID_WAR) : null;
 
     const box = document.getElementById('box');
     const midWarCards = Array.from(box.children).filter(card => card.dataset.war === 'mid');
 
-    midWarCards.forEach(card => {
-        // Get the card's event type from its text element
-        const eventType = getCardEventType(card);
-
-        // Move from box to appropriate deck subsection
-        card.remove();
-        const targetDeckSubsection = getDeckSubsection(eventType);
-        targetDeckSubsection.appendChild(card);
-    });
-
-    // Sort all deck subsections
-    const deckUS = document.getElementById('deck-us');
-    const deckNeutral = document.getElementById('deck-neutral');
-    const deckUSSR = document.getElementById('deck-ussr');
-    sortCardsInContainer(deckUS);
-    sortCardsInContainer(deckNeutral);
-    sortCardsInContainer(deckUSSR);
-
-    // Update averages
-    updateLocationAverages();
-
-    // Finalize action for undo
-    if (action) {
-        finalizeAction(action);
-    }
-
-    // Auto-save current game state
-    autoSaveIfNeeded();
+    moveCardsToDeckByEventType(midWarCards);
+    finalizeBulkOperation(action);
 }
 
 function addLateWar(options = {}) {
-    // Record action for undo
     const action = !options.skipUndo ? recordAction(ACTION_TYPES.ADD_LATE_WAR) : null;
 
     const box = document.getElementById('box');
     const lateWarCards = Array.from(box.children).filter(card => card.dataset.war === 'late');
 
-    lateWarCards.forEach(card => {
-        // Get the card's event type from its text element
-        const eventType = getCardEventType(card);
-
-        // Move from box to appropriate deck subsection
-        card.remove();
-        const targetDeckSubsection = getDeckSubsection(eventType);
-        targetDeckSubsection.appendChild(card);
-    });
-
-    // Sort all deck subsections
-    const deckUS = document.getElementById('deck-us');
-    const deckNeutral = document.getElementById('deck-neutral');
-    const deckUSSR = document.getElementById('deck-ussr');
-    sortCardsInContainer(deckUS);
-    sortCardsInContainer(deckNeutral);
-    sortCardsInContainer(deckUSSR);
-
-    // Update averages
-    updateLocationAverages();
-
-    // Finalize action for undo
-    if (action) {
-        finalizeAction(action);
-    }
-
-    // Auto-save current game state
-    autoSaveIfNeeded();
+    moveCardsToDeckByEventType(lateWarCards);
+    finalizeBulkOperation(action);
 }
 
 function addUnknownCard(options = {}) {
-    // Record action for undo
     const action = !options.skipUndo ? recordAction(ACTION_TYPES.ADD_UNKNOWN) : null;
 
     const opponentHand = document.getElementById('opponent-hand');
@@ -1132,16 +1068,7 @@ function addUnknownCard(options = {}) {
     opponentHand.appendChild(unknownCard);
     sortCardsInContainer(opponentHand);
 
-    // Update averages
-    updateLocationAverages();
-
-    // Finalize action for undo
-    if (action) {
-        finalizeAction(action);
-    }
-
-    // Auto-save current game state
-    autoSaveIfNeeded();
+    finalizeBulkOperation(action);
 }
 
 // Export/Import functionality
