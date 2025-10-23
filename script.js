@@ -133,9 +133,7 @@ function setupHandDropZone(handContainer) {
         }
 
         // Auto-save current game state
-        if (getCurrentGameId()) {
-            saveCurrentGame();
-        }
+        autoSaveIfNeeded();
     });
 }
 
@@ -581,8 +579,8 @@ function restoreGameSnapshot(snapshot, options = {}) {
     updateLocationAverages();
 
     // Auto-save if not during undo operation
-    if (!options.isUndoOperation && getCurrentGameId()) {
-        saveCurrentGame();
+    if (!options.isUndoOperation) {
+        autoSaveIfNeeded();
     }
 }
 
@@ -657,9 +655,7 @@ function moveCard(cardElement, targetLocationId, options = {}) {
     }
 
     // Auto-save current game state
-    if (getCurrentGameId()) {
-        saveCurrentGame();
-    }
+    autoSaveIfNeeded();
 }
 
 function selectHandLocation(locationId, options = {}) {
@@ -725,9 +721,7 @@ document.addEventListener('click', function(e) {
         finalizeAction(action);
 
         // Auto-save current game state
-        if (getCurrentGameId()) {
-            saveCurrentGame();
-        }
+        autoSaveIfNeeded();
     } else if (e.target.classList.contains('card-text')) {
         e.stopPropagation();
         const card = e.target.closest('.card');
@@ -768,6 +762,12 @@ function getCurrentGameId() {
         currentGameId = localStorage.getItem('cardCounter_currentGame');
     }
     return currentGameId;
+}
+
+function autoSaveIfNeeded() {
+    if (getCurrentGameId()) {
+        saveCurrentGame();
+    }
 }
 
 function setCurrentGameId(gameId) {
@@ -874,9 +874,7 @@ function createNewGame() {
     saveGamesList(games);
 
     // Save current game before switching
-    if (getCurrentGameId()) {
-        saveCurrentGame();
-    }
+    autoSaveIfNeeded();
 
     // Clear undo history when creating new game
     clearActionHistory();
@@ -1047,9 +1045,7 @@ function addDiscards(options = {}) {
     }
 
     // Auto-save current game state
-    if (getCurrentGameId()) {
-        saveCurrentGame();
-    }
+    autoSaveIfNeeded();
 }
 
 function addMidWar(options = {}) {
@@ -1086,9 +1082,7 @@ function addMidWar(options = {}) {
     }
 
     // Auto-save current game state
-    if (getCurrentGameId()) {
-        saveCurrentGame();
-    }
+    autoSaveIfNeeded();
 }
 
 function addLateWar(options = {}) {
@@ -1125,9 +1119,7 @@ function addLateWar(options = {}) {
     }
 
     // Auto-save current game state
-    if (getCurrentGameId()) {
-        saveCurrentGame();
-    }
+    autoSaveIfNeeded();
 }
 
 function addUnknownCard(options = {}) {
@@ -1149,9 +1141,7 @@ function addUnknownCard(options = {}) {
     }
 
     // Auto-save current game state
-    if (getCurrentGameId()) {
-        saveCurrentGame();
-    }
+    autoSaveIfNeeded();
 }
 
 // Export/Import functionality
