@@ -995,7 +995,11 @@ function moveCardsToDeckByEventType(cards) {
         const eventType = getCardEventType(card);
         card.remove();
         const targetDeckSubsection = getDeckSubsection(eventType);
+        const targetLocationId = targetDeckSubsection.id;
         targetDeckSubsection.appendChild(card);
+
+        // Update button visibility for new location
+        updateCardButtonVisibility(card, targetLocationId);
     });
     sortAllDeckSubsections();
 }
