@@ -295,6 +295,18 @@ function getDeckSubsection(eventType) {
     }
 }
 
+function getCardEventType(cardElement) {
+    const cardTextElement = cardElement.querySelector('.card-text');
+    if (!cardTextElement) return 'neutral';
+
+    if (cardTextElement.classList.contains('us')) {
+        return 'us';
+    } else if (cardTextElement.classList.contains('ussr')) {
+        return 'ussr';
+    }
+    return 'neutral';
+}
+
 function getCardData(cardElement) {
     const cardText = cardElement.querySelector('.card-text').textContent;
     const opsMatch = cardText.match(/^(\d+(?:\.\d+)?)  (.+)$/);
@@ -613,13 +625,7 @@ function moveCard(cardElement, targetLocationId, options = {}) {
 
     if (targetLocationId === 'deck') {
         // Get the card's event type from its text element
-        const cardTextElement = cardElement.querySelector('.card-text');
-        let eventType = 'neutral';
-        if (cardTextElement.classList.contains('us')) {
-            eventType = 'us';
-        } else if (cardTextElement.classList.contains('ussr')) {
-            eventType = 'ussr';
-        }
+        const eventType = getCardEventType(cardElement);
         const targetLocation = getDeckSubsection(eventType);
         actualLocationId = targetLocation.id;
         targetLocation.appendChild(cardElement);
@@ -778,13 +784,11 @@ function getCardPositions() {
         if (container) {
             positions[locationId] = Array.from(container.children).map(card => {
                 const data = getCardData(card);
-                const cardText = card.querySelector('.card-text');
                 const isUnknown = card.classList.contains('unknown-card');
                 return {
                     name: isUnknown ? '?' : data.name,
                     ops: data.ops,
-                    eventType: cardText.classList.contains('us') ? 'us' :
-                              cardText.classList.contains('ussr') ? 'ussr' : 'neutral',
+                    eventType: getCardEventType(card),
                     canBeRemoved: !card.querySelector('.remove-icon') || !card.querySelector('.remove-icon').classList.contains('hidden'),
                     war: card.dataset.war || 'early',
                     isUnknown: isUnknown
@@ -1021,13 +1025,7 @@ function addDiscards(options = {}) {
 
     discardCards.forEach(card => {
         // Get the card's event type from its text element
-        const cardTextElement = card.querySelector('.card-text');
-        let eventType = 'neutral';
-        if (cardTextElement.classList.contains('us')) {
-            eventType = 'us';
-        } else if (cardTextElement.classList.contains('ussr')) {
-            eventType = 'ussr';
-        }
+        const eventType = getCardEventType(card);
 
         // Move to appropriate deck subsection
         card.remove();
@@ -1063,13 +1061,7 @@ function addMidWar(options = {}) {
 
     midWarCards.forEach(card => {
         // Get the card's event type from its text element
-        const cardTextElement = card.querySelector('.card-text');
-        let eventType = 'neutral';
-        if (cardTextElement.classList.contains('us')) {
-            eventType = 'us';
-        } else if (cardTextElement.classList.contains('ussr')) {
-            eventType = 'ussr';
-        }
+        const eventType = getCardEventType(card);
 
         // Move from box to appropriate deck subsection
         card.remove();
@@ -1108,13 +1100,7 @@ function addLateWar(options = {}) {
 
     lateWarCards.forEach(card => {
         // Get the card's event type from its text element
-        const cardTextElement = card.querySelector('.card-text');
-        let eventType = 'neutral';
-        if (cardTextElement.classList.contains('us')) {
-            eventType = 'us';
-        } else if (cardTextElement.classList.contains('ussr')) {
-            eventType = 'ussr';
-        }
+        const eventType = getCardEventType(card);
 
         // Move from box to appropriate deck subsection
         card.remove();
