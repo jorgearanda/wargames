@@ -236,21 +236,7 @@ async function loadCardDatabase() {
 
 async function loadCards() {
     try {
-        console.log('Attempting to load cards from cards.json');
-        const response = await fetch('cards.json');
-        console.log('Response status:', response.status, response.statusText);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const cards = await response.json();
-        console.log('Cards loaded successfully:', cards);
-
-        // Store full card data for lookup by name
-        cards.forEach(card => {
-            fullCardData[card.name] = card;
-        });
+        const cards = await loadCardDatabase();
 
         cards.forEach(cardData => {
             let targetLocation, targetLocationId;
@@ -269,9 +255,7 @@ async function loadCards() {
         });
 
         // Sort cards in each deck subsection
-        sortCardsInContainer(document.getElementById('deck-us'));
-        sortCardsInContainer(document.getElementById('deck-neutral'));
-        sortCardsInContainer(document.getElementById('deck-ussr'));
+        sortAllDeckSubsections();
 
         // Update averages
         updateLocationAverages();
@@ -800,14 +784,27 @@ function getCardPositions() {
     return positions;
 }
 
+function getGameTitle() {
+    return document.getElementById('game-title').value;
+}
+
+function getGameNotes() {
+    return document.getElementById('game-notes').value;
+}
+
+function setGameUIState(title, notes) {
+    document.getElementById('game-title').value = title || '';
+    document.getElementById('game-notes').value = notes || '';
+}
+
 function saveCurrentGame() {
     const gameId = getCurrentGameId();
     if (!gameId) return;
 
     const gameData = {
         id: gameId,
-        title: document.getElementById('game-title').value,
-        notes: document.getElementById('game-notes').value,
+        title: getGameTitle(),
+        notes: getGameNotes(),
         cardPositions: getCardPositions(),
         lastModified: new Date().toISOString()
         // Note: We don't persist undo history with game saves for now
@@ -882,8 +879,7 @@ function createNewGame() {
     // Initialize new game with default card setup
     isLoading = true;
     setCurrentGameId(gameId);
-    document.getElementById('game-title').value = gameName;
-    document.getElementById('game-notes').value = '';
+    setGameUIState(gameName, '');
 
     // Clear existing cards and load default cards
     clearAllCards();
@@ -918,8 +914,7 @@ function deleteCurrentGame() {
 
     // Clear current game
     setCurrentGameId(null);
-    document.getElementById('game-title').value = '';
-    document.getElementById('game-notes').value = '';
+    setGameUIState('', '');
     clearAllCards();
 
     updateGameSelector();
@@ -942,8 +937,7 @@ function loadGame(gameId) {
     console.log('Loaded game data:', gameData);
 
     if (gameData) {
-        document.getElementById('game-title').value = gameData.title || '';
-        document.getElementById('game-notes').value = gameData.notes || '';
+        setGameUIState(gameData.title, gameData.notes);
 
         if (gameData.cardPositions) {
             restoreCardPositions(gameData.cardPositions);
@@ -959,8 +953,7 @@ function loadGame(gameId) {
     } else {
         // Game not found, load defaults
         console.log('Game data not found, loading defaults');
-        document.getElementById('game-title').value = '';
-        document.getElementById('game-notes').value = '';
+        setGameUIState('', '');
         loadCards().then(() => {
             isLoading = false; // Loading complete
             // Save the default setup for new games
@@ -1119,6 +1112,17 @@ function refreshCardDisplays() {
     });
 }
 
+function attachAutoSaveListener(elementId, eventType, logPrefix) {
+    document.getElementById(elementId).addEventListener(eventType, function() {
+        const value = this.value;
+        const displayValue = elementId === 'game-notes' ? value.substring(0, 50) + '...' : value;
+        console.log(`${logPrefix}:`, displayValue, 'isLoading:', isLoading);
+        if (getCurrentGameId() && !isLoading) {
+            saveCurrentGame();
+        }
+    });
+}
+
 // Load cards and initialize game management
 document.addEventListener('DOMContentLoaded', async function() {
     console.log('DOM Content Loaded');
@@ -1219,33 +1223,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     // Auto-save when title or notes change (but not during loading)
-    document.getElementById('game-title').addEventListener('input', function() {
-        console.log('Title changed:', this.value, 'isLoading:', isLoading);
-        if (getCurrentGameId() && !isLoading) {
-            saveCurrentGame();
-        }
-    });
-
-    document.getElementById('game-title').addEventListener('blur', function() {
-        console.log('Title blur:', this.value, 'isLoading:', isLoading);
-        if (getCurrentGameId() && !isLoading) {
-            saveCurrentGame();
-        }
-    });
-
-    document.getElementById('game-notes').addEventListener('input', function() {
-        console.log('Notes changed:', this.value.substring(0, 50) + '...', 'isLoading:', isLoading);
-        if (getCurrentGameId() && !isLoading) {
-            saveCurrentGame();
-        }
-    });
-
-    document.getElementById('game-notes').addEventListener('blur', function() {
-        console.log('Notes blur:', this.value.substring(0, 50) + '...', 'isLoading:', isLoading);
-        if (getCurrentGameId() && !isLoading) {
-            saveCurrentGame();
-        }
-    });
+    attachAutoSaveListener('game-title', 'input', 'Title changed');
+    attachAutoSaveListener('game-title', 'blur', 'Title blur');
+    attachAutoSaveListener('game-notes', 'input', 'Notes changed');
+    attachAutoSaveListener('game-notes', 'blur', 'Notes blur');
 
     // Short names checkbox event listener
     document.getElementById('short-names-checkbox').addEventListener('change', function() {
