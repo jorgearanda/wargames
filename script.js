@@ -330,11 +330,23 @@ function sortCardsInContainer(container) {
     }
 
     const cards = Array.from(container.children);
+    const isDiscardOrRemoved = container.id === 'discard' || container.id === 'removed';
+
     cards.sort((a, b) => {
         const dataA = getCardData(a);
         const dataB = getCardData(b);
 
-        // Sort by ops first (ascending)
+        // For discard and removed: sort by event type first (US, Neutral, USSR)
+        if (isDiscardOrRemoved) {
+            const typeA = getCardEventType(a);
+            const typeB = getCardEventType(b);
+            const typeOrder = { 'us': 0, 'neutral': 1, 'ussr': 2 };
+            if (typeA !== typeB) {
+                return typeOrder[typeA] - typeOrder[typeB];
+            }
+        }
+
+        // Sort by ops (ascending)
         if (dataA.ops !== dataB.ops) {
             return dataA.ops - dataB.ops;
         }
