@@ -580,17 +580,17 @@ function updateLocationAverages() {
     const yourHandContainer = document.getElementById('your-hand');
     const yourHandStats = calculateAverageOps(yourHandContainer);
     document.getElementById('your-hand-avg').textContent =
-        yourHandStats.count > 0 ? `${yourHandStats.count} cards, ${yourHandStats.sum} ops, ${yourHandStats.average.toFixed(1)}/card` : '';
+        yourHandStats.count > 0 ? `${yourHandStats.count} cards, ${yourHandStats.sum.toFixed(1)} ops, ${yourHandStats.average.toFixed(1)}/card` : '';
 
     // Update Opponent's Hand average
     const opponentHandContainer = document.getElementById('opponent-hand');
     const opponentHandStats = calculateAverageOps(opponentHandContainer);
     document.getElementById('opponent-hand-avg').textContent =
-        opponentHandStats.count > 0 ? `${opponentHandStats.count} cards, ${opponentHandStats.sum} ops, ${opponentHandStats.average.toFixed(1)}/card` : '';
+        opponentHandStats.count > 0 ? `${opponentHandStats.count} cards, ${opponentHandStats.sum.toFixed(1)} ops, ${opponentHandStats.average.toFixed(1)}/card` : '';
 
     // Update Deck average
     document.getElementById('deck-avg').textContent =
-        deckStats.count > 0 ? `${deckStats.count} cards, ${deckStats.sum} ops, ${deckStats.average.toFixed(1)}/card` : '';
+        deckStats.count > 0 ? `${deckStats.count} cards, ${deckStats.sum.toFixed(1)} ops, ${deckStats.average.toFixed(1)}/card` : '';
 }
 
 function moveCard(cardElement, targetLocationId, options = {}) {
