@@ -1,6 +1,8 @@
 let selectedHandLocation = 'your-hand'; // Default to Your Hand
 let useShortNames = false; // Global variable to track short name display
 let fullCardData = {}; // Store full card data by name for lookup
+let selectedType = '-'; // Selected type filter
+let selectedRegion = '-'; // Selected region filter
 
 // Undo system
 let actionHistory = [];
@@ -28,6 +30,10 @@ function createCardElement(cardData, currentLocation = null) {
     // Store full card data for name switching
     cardDiv.dataset.cardName = cardData.name || '';
     cardDiv.dataset.cardShort = cardData.short || '';
+
+    // Store types and regions for filtering
+    cardDiv.dataset.types = JSON.stringify(cardData.types || []);
+    cardDiv.dataset.regions = JSON.stringify(cardData.regions || []);
 
     const actionsDiv = document.createElement('div');
     actionsDiv.className = 'card-actions';
@@ -126,6 +132,7 @@ function setupHandDropZone(handContainer) {
         });
 
         updateLocationAverages();
+        updateCardHighlighting();
 
         // Finalize action for undo
         if (action) {
@@ -259,6 +266,9 @@ async function loadCards() {
 
         // Update averages
         updateLocationAverages();
+
+        // Update highlighting
+        updateCardHighlighting();
 
         console.log('Cards rendered and sorted in deck');
     } catch (error) {
@@ -574,6 +584,9 @@ function restoreGameSnapshot(snapshot, options = {}) {
     // Update averages
     updateLocationAverages();
 
+    // Update highlighting
+    updateCardHighlighting();
+
     // Auto-save if not during undo operation
     if (!options.isUndoOperation) {
         autoSaveIfNeeded();
@@ -592,7 +605,7 @@ function updateLocationAverages() {
     const yourHandContainer = document.getElementById('your-hand');
     const yourHandStats = calculateAverageOps(yourHandContainer);
     document.getElementById('your-hand-avg').textContent =
-        yourHandStats.count > 0 ? `${yourHandStats.count} cards, ${yourHandStats.sum.toFixed(1)} ops, ${yourHandStats.average.toFixed(1)}/card` : '';
+        yourHandStats.count > 0 ? `${yourHandStats.count} cards, ${yourHandStats.sum.toFixed(0)} ops, ${yourHandStats.average.toFixed(1)}/card` : '';
 
     // Update Opponent's Hand average
     const opponentHandContainer = document.getElementById('opponent-hand');
@@ -602,7 +615,7 @@ function updateLocationAverages() {
 
     // Update Deck average
     document.getElementById('deck-avg').textContent =
-        deckStats.count > 0 ? `${deckStats.count} cards, ${deckStats.sum.toFixed(1)} ops, ${deckStats.average.toFixed(1)}/card` : '';
+        deckStats.count > 0 ? `${deckStats.count} cards, ${deckStats.sum.toFixed(0)} ops, ${deckStats.average.toFixed(1)}/card` : '';
 
     // Update Discard count
     const discardContainer = document.getElementById('discard');
@@ -656,6 +669,9 @@ function moveCard(cardElement, targetLocationId, options = {}) {
 
     // Update averages after moving card
     updateLocationAverages();
+
+    // Update highlighting for the moved card
+    updateCardHighlighting();
 
     // Finalize action for undo
     if (action) {
@@ -724,6 +740,7 @@ document.addEventListener('click', function(e) {
 
         card.remove();
         updateLocationAverages();
+        updateCardHighlighting();
 
         // Finalize action for undo
         finalizeAction(action);
@@ -754,6 +771,7 @@ document.addEventListener('click', function(e) {
 // Game management state
 let currentGameId = null;
 let isLoading = false;
+let playerSide = null; // 'US' or 'USSR'
 
 // Game management functions
 function getGamesList() {
@@ -809,7 +827,13 @@ function getCardPositions() {
 }
 
 function getGameTitle() {
-    return document.getElementById('game-title').value;
+    // Title is now only shown in dropdown, retrieve from game data if needed
+    const gameId = getCurrentGameId();
+    if (!gameId) return '';
+
+    const games = getGamesList();
+    const game = games.find(g => g.id === gameId);
+    return game ? game.name : '';
 }
 
 function getGameNotes() {
@@ -817,7 +841,7 @@ function getGameNotes() {
 }
 
 function setGameUIState(title, notes) {
-    document.getElementById('game-title').value = title || '';
+    // Title is now only shown in dropdown, no input field to update
     document.getElementById('game-notes').value = notes || '';
 }
 
@@ -830,6 +854,7 @@ function saveCurrentGame() {
         title: getGameTitle(),
         notes: getGameNotes(),
         cardPositions: getCardPositions(),
+        playerSide: playerSide, // Store the player's side
         lastModified: new Date().toISOString()
         // Note: We don't persist undo history with game saves for now
         // This keeps save files smaller and avoids complexity
@@ -842,6 +867,29 @@ function saveCurrentGame() {
 function loadGameData(gameId) {
     const gameData = localStorage.getItem(`cardCounter_game_${gameId}`);
     return gameData ? JSON.parse(gameData) : null;
+}
+
+function parsePlayerSideFromTitle(title) {
+    // Parse from format: "Opponent Name v YOUR_SIDE (Game ID)"
+    const match = title.match(/v\s+(US|USSR)\s+\(/);
+    return match ? match[1] : null;
+}
+
+function applySideColors() {
+    const yourHandLocation = document.querySelector('#your-hand').closest('.location');
+    const opponentHandLocation = document.querySelector('#opponent-hand').closest('.location');
+
+    // Remove existing side classes
+    yourHandLocation.classList.remove('side-us', 'side-ussr');
+    opponentHandLocation.classList.remove('side-us', 'side-ussr');
+
+    if (playerSide === 'US') {
+        yourHandLocation.classList.add('side-us');
+        opponentHandLocation.classList.add('side-ussr');
+    } else if (playerSide === 'USSR') {
+        yourHandLocation.classList.add('side-ussr');
+        opponentHandLocation.classList.add('side-us');
+    }
 }
 
 function clearAllCards() {
@@ -883,15 +931,35 @@ function restoreCardPositions(positions, options = {}) {
     });
 
     updateLocationAverages();
+    updateCardHighlighting();
+}
+
+function showNewGameModal() {
+    const modal = document.getElementById('new-game-modal');
+    modal.style.display = 'flex';
+
+    // Focus the first input
+    document.getElementById('opponent-name').focus();
+}
+
+function hideNewGameModal() {
+    const modal = document.getElementById('new-game-modal');
+    modal.style.display = 'none';
+
+    // Reset form
+    document.getElementById('new-game-form').reset();
 }
 
 function createNewGame() {
-    const gameId = 'game_' + Date.now();
-    const gameName = prompt('Enter a name for the new game:');
-    if (!gameName) return;
+    showNewGameModal();
+}
+
+function createGameFromForm(opponentName, yourSide, gameId) {
+    const internalGameId = 'game_' + Date.now();
+    const gameName = `${opponentName} v ${yourSide} (${gameId})`;
 
     const games = getGamesList();
-    games.push({ id: gameId, name: gameName });
+    games.push({ id: internalGameId, name: gameName });
     saveGamesList(games);
 
     // Save current game before switching
@@ -900,9 +968,12 @@ function createNewGame() {
     // Clear undo history when creating new game
     clearActionHistory();
 
+    // Set the player's side
+    playerSide = yourSide;
+
     // Initialize new game with default card setup
     isLoading = true;
-    setCurrentGameId(gameId);
+    setCurrentGameId(internalGameId);
     setGameUIState(gameName, '');
 
     // Clear existing cards and load default cards
@@ -910,10 +981,13 @@ function createNewGame() {
     loadCards().then(() => {
         setTimeout(() => {
             isLoading = false;
+            applySideColors(); // Apply colors based on side
             saveCurrentGame();
             updateGameSelector();
         }, 100); // Small delay to ensure cards are rendered
     });
+
+    hideNewGameModal();
 }
 
 function deleteCurrentGame() {
@@ -963,13 +1037,18 @@ function loadGame(gameId) {
     if (gameData) {
         setGameUIState(gameData.title, gameData.notes);
 
+        // Load player side from game data, or parse from title if not stored
+        playerSide = gameData.playerSide || parsePlayerSideFromTitle(gameData.title);
+
         if (gameData.cardPositions) {
             restoreCardPositions(gameData.cardPositions);
             isLoading = false; // Loading complete
+            applySideColors(); // Apply colors based on side
         } else {
             // If no card positions saved, load default cards
             loadCards().then(() => {
                 isLoading = false; // Loading complete
+                applySideColors(); // Apply colors based on side
                 // Only save if this is a new game without positions
                 setTimeout(() => saveCurrentGame(), 100);
             });
@@ -978,8 +1057,10 @@ function loadGame(gameId) {
         // Game not found, load defaults
         console.log('Game data not found, loading defaults');
         setGameUIState('', '');
+        playerSide = null;
         loadCards().then(() => {
             isLoading = false; // Loading complete
+            applySideColors(); // Clear any side colors
             // Save the default setup for new games
             setTimeout(() => saveCurrentGame(), 100);
         });
@@ -1030,6 +1111,7 @@ function moveCardsToDeckByEventType(cards) {
 
 function finalizeBulkOperation(action) {
     updateLocationAverages();
+    updateCardHighlighting();
     if (action) {
         finalizeAction(action);
     }
@@ -1140,6 +1222,38 @@ function refreshCardDisplays() {
     });
 }
 
+function updateCardHighlighting() {
+    const allCards = document.querySelectorAll('.card:not(.unknown-card)');
+
+    allCards.forEach(cardElement => {
+        let shouldHighlight = false;
+        const hasActiveFilter = selectedType !== '-' || selectedRegion !== '-';
+
+        // Check type filter
+        if (selectedType !== '-') {
+            const cardTypes = JSON.parse(cardElement.dataset.types || '[]');
+            if (cardTypes.includes(selectedType)) {
+                shouldHighlight = true;
+            }
+        }
+
+        // Check region filter
+        if (selectedRegion !== '-') {
+            const cardRegions = JSON.parse(cardElement.dataset.regions || '[]');
+            if (cardRegions.includes(selectedRegion)) {
+                shouldHighlight = true;
+            }
+        }
+
+        // Apply or remove highlight
+        if (shouldHighlight && hasActiveFilter) {
+            cardElement.classList.add('highlighted');
+        } else {
+            cardElement.classList.remove('highlighted');
+        }
+    });
+}
+
 function attachAutoSaveListener(elementId, eventType, logPrefix) {
     document.getElementById(elementId).addEventListener(eventType, function() {
         const value = this.value;
@@ -1192,6 +1306,27 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('add-late-btn').addEventListener('click', addLateWar);
     document.getElementById('opponent-plus-btn').addEventListener('click', addUnknownCard);
     document.getElementById('undo-btn').addEventListener('click', performUndo);
+
+    // New game modal event listeners
+    document.getElementById('new-game-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const opponentName = document.getElementById('opponent-name').value.trim();
+        const yourSide = document.getElementById('your-side').value;
+        const gameId = document.getElementById('game-id').value.trim();
+
+        if (opponentName && yourSide && gameId) {
+            createGameFromForm(opponentName, yourSide, gameId);
+        }
+    });
+
+    document.getElementById('cancel-new-game').addEventListener('click', hideNewGameModal);
+
+    // Close modal on outside click
+    document.getElementById('new-game-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            hideNewGameModal();
+        }
+    });
 
     // Keyboard shortcuts
     document.addEventListener('keydown', function(e) {
@@ -1250,9 +1385,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         e.target.value = '';
     });
 
-    // Auto-save when title or notes change (but not during loading)
-    attachAutoSaveListener('game-title', 'input', 'Title changed');
-    attachAutoSaveListener('game-title', 'blur', 'Title blur');
+    // Auto-save when notes change (but not during loading)
     attachAutoSaveListener('game-notes', 'input', 'Notes changed');
     attachAutoSaveListener('game-notes', 'blur', 'Notes blur');
 
@@ -1260,6 +1393,25 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('short-names-checkbox').addEventListener('change', function() {
         useShortNames = this.checked;
         refreshCardDisplays();
+    });
+
+    // Type and region filter event listeners
+    document.getElementById('highlight-dropdown').addEventListener('change', function() {
+        selectedType = this.value;
+        updateCardHighlighting();
+    });
+
+    document.getElementById('region-dropdown').addEventListener('change', function() {
+        selectedRegion = this.value;
+        updateCardHighlighting();
+    });
+
+    document.getElementById('clear-highlight-btn').addEventListener('click', function() {
+        selectedType = '-';
+        selectedRegion = '-';
+        document.getElementById('highlight-dropdown').value = '-';
+        document.getElementById('region-dropdown').value = '-';
+        updateCardHighlighting();
     });
 
     // Initialize drag-and-drop for hand locations

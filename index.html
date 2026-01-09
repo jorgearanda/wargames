@@ -19,15 +19,43 @@
     </div>
 
     <div class="game-title-container">
-        <input type="text" id="game-title" class="game-title-input" placeholder="Enter game title...">
         <div class="title-buttons">
-            <label class="short-checkbox-label">
-                <input type="checkbox" id="short-names-checkbox"> Short
-            </label>
-            <button id="add-discards-btn" class="title-btn">Add Discards</button>
-            <button id="add-mid-btn" class="title-btn">Add Mid</button>
-            <button id="add-late-btn" class="title-btn">Add Late</button>
-            <button id="undo-btn" class="title-btn">Undo</button>
+            <div class="controls-section display-controls">
+                <label for="highlight-dropdown">Highlight cards by type</label>
+                <select id="highlight-dropdown" class="highlight-select">
+                    <option value="-">-</option>
+                    <option value="china">China</option>
+                    <option value="defcon-modify">DEFCON Modify</option>
+                    <option value="hand-modify">Hand Modify</option>
+                    <option value="key">Key</option>
+                    <option value="suicide">Suicide</option>
+                    <option value="vps">VPs</option>
+                    <option value="wars">Wars</option>
+                </select>
+                <label for="region-dropdown">by region</label>
+                <select id="region-dropdown" class="highlight-select">
+                    <option value="-">-</option>
+                    <option value="africa">Africa</option>
+                    <option value="asia">Asia</option>
+                    <option value="central-america">Central America</option>
+                    <option value="europe">Europe</option>
+                    <option value="middle-east">Middle East</option>
+                    <option value="south-america">South America</option>
+                    <option value="southeast-asia">Southeast Asia</option>
+                </select>
+                <button id="clear-highlight-btn" class="title-btn">Clear</button>
+                <label class="short-checkbox-label">
+                    <input type="checkbox" id="short-names-checkbox"> Short names
+                </label>
+            </div>
+            <div class="controls-section deck-management">
+                <button id="add-discards-btn" class="title-btn">Re-add Discards</button>
+                <button id="add-mid-btn" class="title-btn">Add Mid</button>
+                <button id="add-late-btn" class="title-btn">Add Late</button>
+            </div>
+            <div class="controls-section undo-controls">
+                <button id="undo-btn" class="title-btn">Undo</button>
+            </div>
         </div>
     </div>
 
@@ -106,6 +134,34 @@
 
     <!-- Hidden storage for mid/late war cards -->
     <div id="box" style="display: none;"></div>
+
+    <!-- New Game Modal -->
+    <div id="new-game-modal" class="modal">
+        <div class="modal-content">
+            <h2>Create New Game</h2>
+            <form id="new-game-form">
+                <div class="form-group">
+                    <label for="opponent-name">Opponent Name:</label>
+                    <input type="text" id="opponent-name" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="your-side">Your Side:</label>
+                    <select id="your-side" required>
+                        <option value="US">US</option>
+                        <option value="USSR">USSR</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="game-id">Game ID:</label>
+                    <input type="text" id="game-id" required autocomplete="off">
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="modal-btn modal-btn-primary">Create</button>
+                    <button type="button" id="cancel-new-game" class="modal-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

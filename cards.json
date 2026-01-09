@@ -6,7 +6,13 @@
     "eventType": "neutral",
     "ops": 0,
     "canBeRemoved": false,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "vps"
+    ],
+    "regions": [
+      "asia"
+    ]
   },
   {
     "cardId": 2,
@@ -15,7 +21,13 @@
     "eventType": "neutral",
     "ops": 0,
     "canBeRemoved": false,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "vps"
+    ],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 3,
@@ -24,7 +36,13 @@
     "eventType": "neutral",
     "ops": 0,
     "canBeRemoved": false,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "vps"
+    ],
+    "regions": [
+      "middle-east"
+    ]
   },
   {
     "cardId": 4,
@@ -33,7 +51,13 @@
     "eventType": "us",
     "ops": 3,
     "canBeRemoved": false,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "defcon-modify",
+      "suicide",
+      "vps"
+    ],
+    "regions": []
   },
   {
     "cardId": 5,
@@ -42,7 +66,11 @@
     "eventType": "us",
     "ops": 3,
     "canBeRemoved": false,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "hand-modify"
+    ],
+    "regions": []
   },
   {
     "cardId": 7,
@@ -51,7 +79,11 @@
     "eventType": "ussr",
     "ops": 3,
     "canBeRemoved": false,
-    "war": "early"
+    "war": "early",
+    "types": [],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 8,
@@ -60,7 +92,11 @@
     "eventType": "ussr",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [],
+    "regions": [
+      "central-america"
+    ]
   },
   {
     "cardId": 9,
@@ -69,7 +105,12 @@
     "eventType": "ussr",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [],
+    "regions": [
+      "asia",
+      "southeast-asia"
+    ]
   },
   {
     "cardId": 10,
@@ -78,7 +119,14 @@
     "eventType": "ussr",
     "ops": 1,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "hand-modify",
+      "key"
+    ],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 11,
@@ -87,7 +135,14 @@
     "eventType": "ussr",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "vps",
+      "wars"
+    ],
+    "regions": [
+      "asia"
+    ]
   },
   {
     "cardId": 12,
@@ -96,7 +151,11 @@
     "eventType": "ussr",
     "ops": 1,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 13,
@@ -105,7 +164,14 @@
     "eventType": "ussr",
     "ops": 2,
     "canBeRemoved": false,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "vps",
+      "wars"
+    ],
+    "regions": [
+      "middle-east"
+    ]
   },
   {
     "cardId": 14,
@@ -114,7 +180,11 @@
     "eventType": "ussr",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 15,
@@ -123,7 +193,11 @@
     "eventType": "ussr",
     "ops": 1,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [],
+    "regions": [
+      "middle-east"
+    ]
   },
   {
     "cardId": 16,
@@ -132,7 +206,11 @@
     "eventType": "ussr",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 17,
@@ -141,7 +219,11 @@
     "eventType": "ussr",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 18,
@@ -150,7 +232,11 @@
     "eventType": "neutral",
     "ops": 1,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "vps"
+    ],
+    "regions": []
   },
   {
     "cardId": 19,
@@ -159,7 +245,13 @@
     "eventType": "us",
     "ops": 1,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "key"
+    ],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 20,
@@ -168,7 +260,12 @@
     "eventType": "neutral",
     "ops": 2,
     "canBeRemoved": false,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "defcon-modify",
+      "vps"
+    ],
+    "regions": []
   },
   {
     "cardId": 21,
@@ -177,7 +274,11 @@
     "eventType": "us",
     "ops": 4,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 22,
@@ -186,7 +287,11 @@
     "eventType": "us",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 23,
@@ -195,7 +300,11 @@
     "eventType": "us",
     "ops": 4,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 24,
@@ -204,7 +313,14 @@
     "eventType": "neutral",
     "ops": 2,
     "canBeRemoved": false,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "vps",
+      "wars"
+    ],
+    "regions": [
+      "asia"
+    ]
   },
   {
     "cardId": 25,
@@ -213,7 +329,9 @@
     "eventType": "us",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [],
+    "regions": []
   },
   {
     "cardId": 26,
@@ -222,7 +340,12 @@
     "eventType": "us",
     "ops": 1,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "key",
+      "suicide"
+    ],
+    "regions": []
   },
   {
     "cardId": 27,
@@ -231,7 +354,11 @@
     "eventType": "us",
     "ops": 4,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [],
+    "regions": [
+      "asia"
+    ]
   },
   {
     "cardId": 28,
@@ -240,7 +367,12 @@
     "eventType": "ussr",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [],
+    "regions": [
+      "europe",
+      "middle-east"
+    ]
   },
   {
     "cardId": 29,
@@ -249,7 +381,11 @@
     "eventType": "us",
     "ops": 3,
     "canBeRemoved": false,
-    "war": "early"
+    "war": "early",
+    "types": [],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 30,
@@ -258,7 +394,15 @@
     "eventType": "ussr",
     "ops": 2,
     "canBeRemoved": false,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "key"
+    ],
+    "regions": [
+      "africa",
+      "asia",
+      "southeast-asia"
+    ]
   },
   {
     "cardId": 31,
@@ -267,7 +411,11 @@
     "eventType": "neutral",
     "ops": 4,
     "canBeRemoved": false,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "key"
+    ],
+    "regions": []
   },
   {
     "cardId": 32,
@@ -276,7 +424,11 @@
     "eventType": "neutral",
     "ops": 1,
     "canBeRemoved": false,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "key"
+    ],
+    "regions": []
   },
   {
     "cardId": 33,
@@ -285,7 +437,19 @@
     "eventType": "ussr",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "key"
+    ],
+    "regions": [
+      "africa",
+      "asia",
+      "central-america",
+      "europe",
+      "middle-east",
+      "south-america",
+      "southeast-asia"
+    ]
   },
   {
     "cardId": 34,
@@ -294,7 +458,12 @@
     "eventType": "neutral",
     "ops": 4,
     "canBeRemoved": false,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "defcon-modify",
+      "vps"
+    ],
+    "regions": []
   },
   {
     "cardId": 35,
@@ -303,7 +472,11 @@
     "eventType": "us",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [],
+    "regions": [
+      "asia"
+    ]
   },
   {
     "cardId": 103,
@@ -312,7 +485,11 @@
     "eventType": "us",
     "ops": 2,
     "canBeRemoved": false,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "key"
+    ],
+    "regions": []
   },
   {
     "cardId": 104,
@@ -321,7 +498,17 @@
     "eventType": "ussr",
     "ops": 2,
     "canBeRemoved": false,
-    "war": "early"
+    "war": "early",
+    "types": [],
+    "regions": [
+      "africa",
+      "asia",
+      "central-america",
+      "europe",
+      "middle-east",
+      "south-america",
+      "southeast-asia"
+    ]
   },
   {
     "cardId": 105,
@@ -330,7 +517,13 @@
     "eventType": "us",
     "ops": 2,
     "canBeRemoved": false,
-    "war": "early"
+    "war": "early",
+    "types": [
+      "vps"
+    ],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 106,
@@ -339,7 +532,9 @@
     "eventType": "us",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "early"
+    "war": "early",
+    "types": [],
+    "regions": []
   },
   {
     "cardId": 36,
@@ -348,7 +543,21 @@
     "eventType": "neutral",
     "ops": 3,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "key",
+      "vps",
+      "wars"
+    ],
+    "regions": [
+      "africa",
+      "asia",
+      "central-america",
+      "europe",
+      "middle-east",
+      "south-america",
+      "southeast-asia"
+    ]
   },
   {
     "cardId": 37,
@@ -357,7 +566,13 @@
     "eventType": "neutral",
     "ops": 0,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "vps"
+    ],
+    "regions": [
+      "central-america"
+    ]
   },
   {
     "cardId": 38,
@@ -366,7 +581,13 @@
     "eventType": "neutral",
     "ops": 0,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "vps"
+    ],
+    "regions": [
+      "southeast-asia"
+    ]
   },
   {
     "cardId": 39,
@@ -375,7 +596,11 @@
     "eventType": "neutral",
     "ops": 3,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "vps"
+    ],
+    "regions": []
   },
   {
     "cardId": 40,
@@ -384,7 +609,11 @@
     "eventType": "neutral",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "defcon-modify"
+    ],
+    "regions": []
   },
   {
     "cardId": 41,
@@ -393,7 +622,9 @@
     "eventType": "us",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [],
+    "regions": []
   },
   {
     "cardId": 42,
@@ -402,7 +633,11 @@
     "eventType": "ussr",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "key"
+    ],
+    "regions": []
   },
   {
     "cardId": 43,
@@ -411,7 +646,11 @@
     "eventType": "neutral",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "defcon-modify"
+    ],
+    "regions": []
   },
   {
     "cardId": 44,
@@ -420,7 +659,11 @@
     "eventType": "us",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "key"
+    ],
+    "regions": []
   },
   {
     "cardId": 45,
@@ -429,7 +672,12 @@
     "eventType": "neutral",
     "ops": 1,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "defcon-modify",
+      "vps"
+    ],
+    "regions": []
   },
   {
     "cardId": 46,
@@ -438,7 +686,11 @@
     "eventType": "neutral",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "defcon-modify"
+    ],
+    "regions": []
   },
   {
     "cardId": 47,
@@ -447,7 +699,12 @@
     "eventType": "neutral",
     "ops": 2,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [],
+    "regions": [
+      "central-america",
+      "south-america"
+    ]
   },
   {
     "cardId": 48,
@@ -456,7 +713,11 @@
     "eventType": "us",
     "ops": 1,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "vps"
+    ],
+    "regions": []
   },
   {
     "cardId": 49,
@@ -465,7 +726,11 @@
     "eventType": "neutral",
     "ops": 2,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "hand-modify"
+    ],
+    "regions": []
   },
   {
     "cardId": 50,
@@ -474,7 +739,13 @@
     "eventType": "ussr",
     "ops": 4,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "defcon-modify",
+      "vps",
+      "suicide"
+    ],
+    "regions": []
   },
   {
     "cardId": 51,
@@ -483,7 +754,9 @@
     "eventType": "ussr",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [],
+    "regions": []
   },
   {
     "cardId": 52,
@@ -492,7 +765,11 @@
     "eventType": "ussr",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [],
+    "regions": [
+      "africa"
+    ]
   },
   {
     "cardId": 53,
@@ -501,7 +778,11 @@
     "eventType": "ussr",
     "ops": 2,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [],
+    "regions": [
+      "africa"
+    ]
   },
   {
     "cardId": 54,
@@ -510,7 +791,11 @@
     "eventType": "ussr",
     "ops": 1,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [],
+    "regions": [
+      "south-america"
+    ]
   },
   {
     "cardId": 55,
@@ -519,7 +804,13 @@
     "eventType": "ussr",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "vps"
+    ],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 56,
@@ -528,7 +819,11 @@
     "eventType": "ussr",
     "ops": 4,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [],
+    "regions": [
+      "middle-east"
+    ]
   },
   {
     "cardId": 57,
@@ -537,7 +832,12 @@
     "eventType": "neutral",
     "ops": 4,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "defcon-modify",
+      "key"
+    ],
+    "regions": []
   },
   {
     "cardId": 58,
@@ -546,7 +846,11 @@
     "eventType": "ussr",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "china"
+    ],
+    "regions": []
   },
   {
     "cardId": 59,
@@ -555,7 +859,11 @@
     "eventType": "ussr",
     "ops": 4,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "wars"
+    ],
+    "regions": []
   },
   {
     "cardId": 60,
@@ -564,7 +872,11 @@
     "eventType": "ussr",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "vps"
+    ],
+    "regions": []
   },
   {
     "cardId": 61,
@@ -573,7 +885,11 @@
     "eventType": "ussr",
     "ops": 3,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "vps"
+    ],
+    "regions": []
   },
   {
     "cardId": 62,
@@ -582,7 +898,12 @@
     "eventType": "ussr",
     "ops": 1,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "key",
+      "suicide"
+    ],
+    "regions": []
   },
   {
     "cardId": 63,
@@ -591,7 +912,13 @@
     "eventType": "us",
     "ops": 2,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [],
+    "regions": [
+      "africa",
+      "asia",
+      "southeast-asia"
+    ]
   },
   {
     "cardId": 64,
@@ -600,7 +927,12 @@
     "eventType": "us",
     "ops": 1,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [],
+    "regions": [
+      "central-america",
+      "south-america"
+    ]
   },
   {
     "cardId": 65,
@@ -609,7 +941,14 @@
     "eventType": "us",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "wars",
+      "vps"
+    ],
+    "regions": [
+      "middle-east"
+    ]
   },
   {
     "cardId": 66,
@@ -618,7 +957,9 @@
     "eventType": "us",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [],
+    "regions": []
   },
   {
     "cardId": 67,
@@ -627,7 +968,13 @@
     "eventType": "us",
     "ops": 2,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "key",
+      "hand-modify",
+      "suicide"
+    ],
+    "regions": []
   },
   {
     "cardId": 68,
@@ -636,7 +983,11 @@
     "eventType": "us",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 69,
@@ -645,7 +996,9 @@
     "eventType": "neutral",
     "ops": 2,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [],
+    "regions": []
   },
   {
     "cardId": 70,
@@ -654,7 +1007,12 @@
     "eventType": "us",
     "ops": 1,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [],
+    "regions": [
+      "central-america",
+      "south-america"
+    ]
   },
   {
     "cardId": 71,
@@ -663,7 +1021,12 @@
     "eventType": "us",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "china",
+      "vps"
+    ],
+    "regions": []
   },
   {
     "cardId": 72,
@@ -672,7 +1035,11 @@
     "eventType": "us",
     "ops": 1,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [],
+    "regions": [
+      "africa"
+    ]
   },
   {
     "cardId": 73,
@@ -681,7 +1048,9 @@
     "eventType": "us",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [],
+    "regions": []
   },
   {
     "cardId": 74,
@@ -690,7 +1059,18 @@
     "eventType": "us",
     "ops": 2,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "key"
+    ],
+    "regions": [
+      "africa",
+      "asia",
+      "central-america",
+      "middle-east",
+      "south-america",
+      "southeast-asia"
+    ]
   },
   {
     "cardId": 75,
@@ -699,7 +1079,11 @@
     "eventType": "ussr",
     "ops": 2,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [],
+    "regions": [
+      "central-america"
+    ]
   },
   {
     "cardId": 76,
@@ -708,7 +1092,13 @@
     "eventType": "us",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "china"
+    ],
+    "regions": [
+      "asia"
+    ]
   },
   {
     "cardId": 77,
@@ -717,7 +1107,12 @@
     "eventType": "us",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "hand-modify",
+      "key"
+    ],
+    "regions": []
   },
   {
     "cardId": 78,
@@ -726,7 +1121,11 @@
     "eventType": "us",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "vps"
+    ],
+    "regions": []
   },
   {
     "cardId": 79,
@@ -735,7 +1134,13 @@
     "eventType": "neutral",
     "ops": 0,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "vps"
+    ],
+    "regions": [
+      "africa"
+    ]
   },
   {
     "cardId": 80,
@@ -744,7 +1149,11 @@
     "eventType": "neutral",
     "ops": 2,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "vps"
+    ],
+    "regions": []
   },
   {
     "cardId": 81,
@@ -753,7 +1162,13 @@
     "eventType": "neutral",
     "ops": 0,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [
+      "vps"
+    ],
+    "regions": [
+      "south-america"
+    ]
   },
   {
     "cardId": 107,
@@ -762,7 +1177,13 @@
     "eventType": "ussr",
     "ops": 3,
     "canBeRemoved": false,
-    "war": "mid"
+    "war": "mid",
+    "types": [],
+    "regions": [
+      "africa",
+      "central-america",
+      "south-america"
+    ]
   },
   {
     "cardId": 108,
@@ -771,7 +1192,9 @@
     "eventType": "us",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "mid"
+    "war": "mid",
+    "types": [],
+    "regions": []
   },
   {
     "cardId": 82,
@@ -780,7 +1203,11 @@
     "eventType": "ussr",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [],
+    "regions": [
+      "middle-east"
+    ]
   },
   {
     "cardId": 83,
@@ -789,7 +1216,14 @@
     "eventType": "us",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [
+      "vps"
+    ],
+    "regions": [
+      "europe",
+      "south-america"
+    ]
   },
   {
     "cardId": 84,
@@ -798,7 +1232,11 @@
     "eventType": "us",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [
+      "vps"
+    ],
+    "regions": []
   },
   {
     "cardId": 85,
@@ -807,7 +1245,12 @@
     "eventType": "us",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [
+      "key",
+      "suicide"
+    ],
+    "regions": []
   },
   {
     "cardId": 86,
@@ -816,7 +1259,9 @@
     "eventType": "us",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [],
+    "regions": []
   },
   {
     "cardId": 87,
@@ -825,7 +1270,11 @@
     "eventType": "ussr",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 88,
@@ -834,7 +1283,11 @@
     "eventType": "ussr",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [],
+    "regions": [
+      "middle-east"
+    ]
   },
   {
     "cardId": 89,
@@ -843,7 +1296,14 @@
     "eventType": "us",
     "ops": 4,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [
+      "defcon-modify",
+      "key",
+      "suicide",
+      "vps"
+    ],
+    "regions": []
   },
   {
     "cardId": 90,
@@ -852,7 +1312,12 @@
     "eventType": "ussr",
     "ops": 4,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [
+      "defcon-modify",
+      "vps"
+    ],
+    "regions": []
   },
   {
     "cardId": 91,
@@ -861,7 +1326,13 @@
     "eventType": "ussr",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [
+      "suicide"
+    ],
+    "regions": [
+      "central-america"
+    ]
   },
   {
     "cardId": 92,
@@ -870,7 +1341,11 @@
     "eventType": "neutral",
     "ops": 2,
     "canBeRemoved": false,
-    "war": "late"
+    "war": "late",
+    "types": [
+      "hand-modify"
+    ],
+    "regions": []
   },
   {
     "cardId": 93,
@@ -879,7 +1354,9 @@
     "eventType": "ussr",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [],
+    "regions": []
   },
   {
     "cardId": 94,
@@ -888,7 +1365,11 @@
     "eventType": "us",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [
+      "key"
+    ],
+    "regions": []
   },
   {
     "cardId": 95,
@@ -897,7 +1378,13 @@
     "eventType": "ussr",
     "ops": 2,
     "canBeRemoved": false,
-    "war": "late"
+    "war": "late",
+    "types": [
+      "hand-modify"
+    ],
+    "regions": [
+      "south-america"
+    ]
   },
   {
     "cardId": 96,
@@ -906,7 +1393,14 @@
     "eventType": "us",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [
+      "key",
+      "suicide"
+    ],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 97,
@@ -915,7 +1409,12 @@
     "eventType": "us",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [
+      "vps",
+      "wars"
+    ],
+    "regions": []
   },
   {
     "cardId": 98,
@@ -924,7 +1423,12 @@
     "eventType": "ussr",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [
+      "hand-modify",
+      "key"
+    ],
+    "regions": []
   },
   {
     "cardId": 99,
@@ -933,7 +1437,13 @@
     "eventType": "ussr",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [
+      "vps"
+    ],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 100,
@@ -942,7 +1452,11 @@
     "eventType": "neutral",
     "ops": 4,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [
+      "key"
+    ],
+    "regions": []
   },
   {
     "cardId": 101,
@@ -951,7 +1465,11 @@
     "eventType": "us",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [],
+    "regions": [
+      "europe"
+    ]
   },
   {
     "cardId": 102,
@@ -960,7 +1478,14 @@
     "eventType": "neutral",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [
+      "vps",
+      "wars"
+    ],
+    "regions": [
+      "middle-east"
+    ]
   },
   {
     "cardId": 109,
@@ -969,7 +1494,11 @@
     "eventType": "ussr",
     "ops": 2,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [
+      "vps"
+    ],
+    "regions": []
   },
   {
     "cardId": 110,
@@ -978,6 +1507,10 @@
     "eventType": "us",
     "ops": 3,
     "canBeRemoved": true,
-    "war": "late"
+    "war": "late",
+    "types": [],
+    "regions": [
+      "middle-east"
+    ]
   }
 ]
