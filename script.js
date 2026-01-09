@@ -3,6 +3,8 @@ let useShortNames = false; // Global variable to track short name display
 let fullCardData = {}; // Store full card data by name for lookup
 let selectedType = '-'; // Selected type filter
 let selectedRegion = '-'; // Selected region filter
+let midWarAdded = false; // Track if mid war cards have been added
+let lateWarAdded = false; // Track if late war cards have been added
 
 // Undo system
 let actionHistory = [];
@@ -415,6 +417,8 @@ function getGameSnapshot() {
     return {
         cardPositions: getCardPositions(),
         selectedHandLocation: selectedHandLocation,
+        midWarAdded: midWarAdded,
+        lateWarAdded: lateWarAdded,
         timestamp: Date.now()
     };
 }
@@ -580,6 +584,11 @@ function restoreGameSnapshot(snapshot, options = {}) {
         selectedHandLocation = snapshot.selectedHandLocation;
         selectHandLocation(selectedHandLocation);
     }
+
+    // Restore war card flags
+    midWarAdded = snapshot.midWarAdded || false;
+    lateWarAdded = snapshot.lateWarAdded || false;
+    updateWarButtonStates();
 
     // Update averages
     updateLocationAverages();
@@ -855,6 +864,8 @@ function saveCurrentGame() {
         notes: getGameNotes(),
         cardPositions: getCardPositions(),
         playerSide: playerSide, // Store the player's side
+        midWarAdded: midWarAdded,
+        lateWarAdded: lateWarAdded,
         lastModified: new Date().toISOString()
         // Note: We don't persist undo history with game saves for now
         // This keeps save files smaller and avoids complexity
@@ -974,6 +985,11 @@ function createGameFromForm(opponentName, yourSide, gameId) {
     // Set the player's side
     playerSide = yourSide;
 
+    // Reset war card flags for new game
+    midWarAdded = false;
+    lateWarAdded = false;
+    updateWarButtonStates();
+
     // Initialize new game with default card setup
     isLoading = true;
     setCurrentGameId(internalGameId);
@@ -1043,6 +1059,11 @@ function loadGame(gameId) {
         // Load player side from game data, or parse from title if not stored
         playerSide = gameData.playerSide || parsePlayerSideFromTitle(gameData.title);
 
+        // Load war card flags
+        midWarAdded = gameData.midWarAdded || false;
+        lateWarAdded = gameData.lateWarAdded || false;
+        updateWarButtonStates();
+
         if (gameData.cardPositions) {
             restoreCardPositions(gameData.cardPositions);
             isLoading = false; // Loading complete
@@ -1061,6 +1082,9 @@ function loadGame(gameId) {
         console.log('Game data not found, loading defaults');
         setGameUIState('', '');
         playerSide = null;
+        midWarAdded = false;
+        lateWarAdded = false;
+        updateWarButtonStates();
         loadCards().then(() => {
             isLoading = false; // Loading complete
             applySideColors(); // Clear any side colors
@@ -1145,6 +1169,14 @@ function addDiscards(options = {}) {
     finalizeBulkOperation(action);
 }
 
+function updateWarButtonStates() {
+    const midBtn = document.getElementById('add-mid-btn');
+    const lateBtn = document.getElementById('add-late-btn');
+
+    midBtn.disabled = midWarAdded;
+    lateBtn.disabled = lateWarAdded;
+}
+
 function addMidWar(options = {}) {
     const action = !options.skipUndo ? recordAction(ACTION_TYPES.ADD_MID_WAR) : null;
 
@@ -1152,6 +1184,10 @@ function addMidWar(options = {}) {
     const midWarCards = Array.from(box.children).filter(card => card.dataset.war === 'mid');
 
     moveCardsToDeckByEventType(midWarCards);
+
+    midWarAdded = true;
+    updateWarButtonStates();
+
     finalizeBulkOperation(action);
 }
 
@@ -1162,6 +1198,10 @@ function addLateWar(options = {}) {
     const lateWarCards = Array.from(box.children).filter(card => card.dataset.war === 'late');
 
     moveCardsToDeckByEventType(lateWarCards);
+
+    lateWarAdded = true;
+    updateWarButtonStates();
+
     finalizeBulkOperation(action);
 }
 
@@ -1273,6 +1313,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     console.log('DOM Content Loaded');
     updateGameSelector();
     updateUndoButtonState(); // Initialize undo button state
+    updateWarButtonStates(); // Initialize war button states
 
     // Always load card database first for short name lookup
     try {
