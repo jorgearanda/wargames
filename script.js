@@ -938,6 +938,9 @@ function showNewGameModal() {
     const modal = document.getElementById('new-game-modal');
     modal.style.display = 'flex';
 
+    // Pre-populate Game ID with "Friendly"
+    document.getElementById('game-id').value = 'Friendly';
+
     // Focus the first input
     document.getElementById('opponent-name').focus();
 }
