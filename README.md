@@ -5,7 +5,8 @@ This is a card tracker for Twilight Struggle board game sessions, inspired by [D
 ## Features
 
 - **Card Management**: Move cards between your hand, opponent's hand, deck, discard pile, and removed pile
-  - Sort the cards in your hand and your opponents
+  - Add cards to your opponent's hand by first clicking the title of their card region
+  - Sort the cards in your hand and your opponents by dragging and dropping
   - Keep track of unknown cards in your opponent's hand and provide an estimate of their operations points
 - **Card Highlighting**: Filter and highlight cards by type or region they can influence
 - **Undo Support**: Undo your last 20 actions with Ctrl/Cmd+Z
