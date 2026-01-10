@@ -75,7 +75,10 @@ function createCardElement(cardData, currentLocation = null) {
         cardText.classList.add(cardData.eventType);
     }
     const displayName = useShortNames ? (cardData.short || cardData.name) : cardData.name;
-    cardText.textContent = `${cardData.ops}  ${displayName}`;
+    // Show "★" for scoring cards (ops: 0 and vps type), otherwise show ops number
+    const isScoringCard = cardData.ops === 0 && cardData.types && cardData.types.includes('vps');
+    const opsDisplay = isScoringCard ? '★' : cardData.ops;
+    cardText.textContent = `${opsDisplay}  ${displayName}`;
 
     actionsDiv.appendChild(removeIcon);
     actionsDiv.appendChild(discardIcon);
@@ -329,10 +332,13 @@ function getCardEventType(cardElement) {
 
 function getCardData(cardElement) {
     const cardText = cardElement.querySelector('.card-text').textContent;
-    const opsMatch = cardText.match(/^(\d+(?:\.\d+)?)  (.+)$/);
+    // Match either number or star for ops
+    const opsMatch = cardText.match(/^(\d+(?:\.\d+)?|★)  (.+)$/);
     if (opsMatch) {
+        // Convert star back to 0 for internal ops value
+        const opsValue = opsMatch[1] === '★' ? 0 : parseFloat(opsMatch[1]);
         return {
-            ops: parseFloat(opsMatch[1]),
+            ops: opsValue,
             name: cardElement.dataset.cardName || opsMatch[2], // Use stored full name if available
             short: cardElement.dataset.cardShort || opsMatch[2] // Include short name too
         };
@@ -1310,7 +1316,8 @@ function refreshCardDisplays() {
         const cardText = cardElement.querySelector('.card-text');
         if (cardText && cardElement.dataset.cardName && cardElement.dataset.cardShort) {
             const displayName = useShortNames ? cardElement.dataset.cardShort : cardElement.dataset.cardName;
-            const opsMatch = cardText.textContent.match(/^(\d+(?:\.\d+)?)  /);
+            // Match either number or star
+            const opsMatch = cardText.textContent.match(/^(\d+(?:\.\d+)?|★)  /);
             const ops = opsMatch ? opsMatch[1] : '';
             cardText.textContent = `${ops}  ${displayName}`;
         }
