@@ -40,12 +40,25 @@ function createCardElement(cardData, currentLocation = null) {
     const actionsDiv = document.createElement('div');
     actionsDiv.className = 'card-actions';
 
+    // Check if this is Shuttle Diplomacy card
+    const isShuttleDiplomacy = cardData.name === 'Shuttle Diplomacy';
+
+    // Create airplane icon for Shuttle Diplomacy, otherwise create remove icon
     const removeIcon = document.createElement('div');
-    removeIcon.className = 'card-icon remove-icon';
-    removeIcon.title = 'Move to Removed';
-    removeIcon.textContent = '⊘';
-    if (!cardData.canBeRemoved || currentLocation === 'removed') {
-        removeIcon.classList.add('hidden');
+    if (isShuttleDiplomacy) {
+        removeIcon.className = 'card-icon airplane-icon';
+        removeIcon.title = 'Move to In Front';
+        removeIcon.textContent = '✈';
+        if (currentLocation === 'in-front') {
+            removeIcon.classList.add('hidden');
+        }
+    } else {
+        removeIcon.className = 'card-icon remove-icon';
+        removeIcon.title = 'Move to Removed';
+        removeIcon.textContent = '⊘';
+        if (!cardData.canBeRemoved || currentLocation === 'removed') {
+            removeIcon.classList.add('hidden');
+        }
     }
 
     const discardIcon = document.createElement('div');
@@ -163,8 +176,21 @@ function getDragAfterElement(container, y) {
 
 function updateCardButtonVisibility(cardElement, newLocationId) {
     const removeIcon = cardElement.querySelector('.remove-icon');
+    const airplaneIcon = cardElement.querySelector('.airplane-icon');
     const discardIcon = cardElement.querySelector('.discard-icon');
 
+    // Handle airplane icon for Shuttle Diplomacy
+    if (airplaneIcon) {
+        if (newLocationId === 'in-front') {
+            airplaneIcon.classList.add('hidden');
+            airplaneIcon.style.visibility = 'hidden';
+        } else {
+            airplaneIcon.classList.remove('hidden');
+            airplaneIcon.style.visibility = 'visible';
+        }
+    }
+
+    // Handle regular remove icon
     if (removeIcon) {
         const canBeRemoved = cardElement.dataset.canBeRemoved === 'true';
 
@@ -342,14 +368,14 @@ function sortCardsInContainer(container) {
     }
 
     const cards = Array.from(container.children);
-    const isDiscardOrRemoved = container.id === 'discard' || container.id === 'removed';
+    const isDiscardOrRemovedOrInFront = container.id === 'discard' || container.id === 'removed' || container.id === 'in-front';
 
     cards.sort((a, b) => {
         const dataA = getCardData(a);
         const dataB = getCardData(b);
 
-        // For discard and removed: sort by event type first (US, Neutral, USSR)
-        if (isDiscardOrRemoved) {
+        // For discard, removed, and in-front: sort by event type first (US, Neutral, USSR)
+        if (isDiscardOrRemovedOrInFront) {
             const typeA = getCardEventType(a);
             const typeB = getCardEventType(b);
             const typeOrder = { 'us': 0, 'neutral': 1, 'ussr': 2 };
@@ -637,6 +663,12 @@ function updateLocationAverages() {
     const removedCount = removedContainer.children.length;
     document.getElementById('removed-count').textContent =
         removedCount > 0 ? `${removedCount} card${removedCount !== 1 ? 's' : ''}` : '';
+
+    // Update In Front count
+    const inFrontContainer = document.getElementById('in-front');
+    const inFrontCount = inFrontContainer.children.length;
+    document.getElementById('in-front-count').textContent =
+        inFrontCount > 0 ? `${inFrontCount} card${inFrontCount !== 1 ? 's' : ''}` : '';
 }
 
 function moveCard(cardElement, targetLocationId, options = {}) {
@@ -681,6 +713,22 @@ function moveCard(cardElement, targetLocationId, options = {}) {
 
     // Update highlighting for the moved card
     updateCardHighlighting();
+
+    // Special logic: If Middle East or Asia Scoring is moved to discard,
+    // automatically move Shuttle Diplomacy from "in-front" to discard
+    if (targetLocationId === 'discard' && !options.skipUndo) {
+        const cardName = getCardData(cardElement).name;
+        if (cardName === 'Middle East Scoring' || cardName === 'Asia Scoring') {
+            const inFrontContainer = document.getElementById('in-front');
+            const shuttleDiplomacyCard = Array.from(inFrontContainer.children).find(card => {
+                return getCardData(card).name === 'Shuttle Diplomacy';
+            });
+            if (shuttleDiplomacyCard) {
+                // Move Shuttle Diplomacy to discard automatically
+                moveCard(shuttleDiplomacyCard, 'discard', { skipUndo: false });
+            }
+        }
+    }
 
     // Finalize action for undo
     if (action) {
@@ -736,6 +784,10 @@ document.addEventListener('click', function(e) {
         e.stopPropagation();
         const card = e.target.closest('.card');
         moveCard(card, 'discard');
+    } else if (e.target.classList.contains('airplane-icon')) {
+        e.stopPropagation();
+        const card = e.target.closest('.card');
+        moveCard(card, 'in-front');
     } else if (e.target.classList.contains('remove-icon')) {
         e.stopPropagation();
         const card = e.target.closest('.card');
@@ -812,7 +864,7 @@ function setCurrentGameId(gameId) {
 
 function getCardPositions() {
     const positions = {};
-    const locations = ['your-hand', 'opponent-hand', 'deck-us', 'deck-neutral', 'deck-ussr', 'discard', 'removed', 'box'];
+    const locations = ['your-hand', 'opponent-hand', 'deck-us', 'deck-neutral', 'deck-ussr', 'discard', 'removed', 'in-front', 'box'];
 
     locations.forEach(locationId => {
         const container = document.getElementById(locationId);
@@ -904,7 +956,7 @@ function applySideColors() {
 }
 
 function clearAllCards() {
-    const locations = ['your-hand', 'opponent-hand', 'deck-us', 'deck-neutral', 'deck-ussr', 'discard', 'removed', 'box'];
+    const locations = ['your-hand', 'opponent-hand', 'deck-us', 'deck-neutral', 'deck-ussr', 'discard', 'removed', 'in-front', 'box'];
     locations.forEach(locationId => {
         const container = document.getElementById(locationId);
         if (container) {

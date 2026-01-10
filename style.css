@@ -153,6 +153,19 @@ h2 {
     visibility: hidden;
 }
 
+.airplane-icon {
+    background: #5b9bd5;
+    color: white;
+}
+
+.airplane-icon:hover {
+    background: #4a8bc2;
+}
+
+.airplane-icon.hidden {
+    visibility: hidden;
+}
+
 .card-text {
     cursor: pointer;
     font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Monaco, Consolas, 'Courier New', monospace;
