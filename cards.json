@@ -8,6 +8,7 @@
     "canBeRemoved": false,
     "war": "early",
     "types": [
+      "scoring",
       "vps"
     ],
     "regions": [
@@ -23,6 +24,7 @@
     "canBeRemoved": false,
     "war": "early",
     "types": [
+      "scoring",
       "vps"
     ],
     "regions": [
@@ -38,6 +40,7 @@
     "canBeRemoved": false,
     "war": "early",
     "types": [
+      "scoring",
       "vps"
     ],
     "regions": [
@@ -568,6 +571,7 @@
     "canBeRemoved": false,
     "war": "mid",
     "types": [
+      "scoring",
       "vps"
     ],
     "regions": [
@@ -583,6 +587,7 @@
     "canBeRemoved": true,
     "war": "mid",
     "types": [
+      "scoring",
       "vps"
     ],
     "regions": [
@@ -1136,6 +1141,7 @@
     "canBeRemoved": false,
     "war": "mid",
     "types": [
+      "scoring",
       "vps"
     ],
     "regions": [
@@ -1164,6 +1170,7 @@
     "canBeRemoved": false,
     "war": "mid",
     "types": [
+      "scoring",
       "vps"
     ],
     "regions": [
