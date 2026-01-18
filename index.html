@@ -66,7 +66,10 @@
         <div class="hand-row">
             <div class="location">
                 <div class="location-header">
-                    <h2>Your Hand</h2>
+                    <h2 title="Click to select as target for deck cards">
+                        <span class="selection-indicator" id="your-hand-indicator">●</span>
+                        Your Hand
+                    </h2>
                     <span class="ops-average" id="your-hand-avg"></span>
                 </div>
                 <div class="card-area" id="your-hand"></div>
@@ -74,7 +77,10 @@
 
             <div class="location">
                 <div class="location-header">
-                    <h2>Opponent's Hand</h2>
+                    <h2 title="Click to select as target for deck cards">
+                        <span class="selection-indicator" id="opponent-hand-indicator">○</span>
+                        Opponent's Hand
+                    </h2>
                     <span class="ops-average" id="opponent-hand-avg"></span>
                     <div class="hand-controls">
                         <div class="card-icon hand-control-icon" id="opponent-plus-btn" title="Add card">+</div>

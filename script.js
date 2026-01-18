@@ -754,23 +754,36 @@ function selectHandLocation(locationId, options = {}) {
     // Set the selected hand location
     selectedHandLocation = locationId;
 
-    // Add selected class to opponent's hand if it's selected
-    if (locationId === 'opponent-hand') {
+    // Update selection indicators
+    const yourHandIndicator = document.getElementById('your-hand-indicator');
+    const opponentHandIndicator = document.getElementById('opponent-hand-indicator');
+
+    if (locationId === 'your-hand') {
+        const yourHandLocation = document.querySelector('#your-hand').closest('.location');
+        if (yourHandLocation) {
+            yourHandLocation.classList.add('selected');
+        }
+        if (yourHandIndicator) yourHandIndicator.textContent = '●';
+        if (opponentHandIndicator) opponentHandIndicator.textContent = '○';
+    } else if (locationId === 'opponent-hand') {
         const opponentHandLocation = document.querySelector('#opponent-hand').closest('.location');
         if (opponentHandLocation) {
             opponentHandLocation.classList.add('selected');
         }
+        if (yourHandIndicator) yourHandIndicator.textContent = '○';
+        if (opponentHandIndicator) opponentHandIndicator.textContent = '●';
     }
 }
 
 document.addEventListener('click', function(e) {
-    // Handle location header clicks
-    if (e.target.tagName === 'H2') {
+    // Handle location header clicks (including clicks on h2 or selection indicator)
+    const h2Element = e.target.tagName === 'H2' ? e.target : e.target.closest('h2');
+    if (h2Element) {
         // Find the card area - it might be a sibling of the parent container now
-        let cardArea = e.target.nextElementSibling;
+        let cardArea = h2Element.nextElementSibling;
         if (!cardArea || !cardArea.classList.contains('card-area')) {
             // Try looking for it as a sibling of the parent
-            const parentContainer = e.target.closest('.location-header');
+            const parentContainer = h2Element.closest('.location-header');
             if (parentContainer) {
                 cardArea = parentContainer.nextElementSibling;
             }
